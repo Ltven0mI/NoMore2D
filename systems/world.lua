@@ -1,6 +1,6 @@
 world = {}
 world.systemKey = "world"
-world.runPriority = 4
+world.runPriority = 6
 
 -- Variables --
 world.map = {}
@@ -18,7 +18,8 @@ function world.draw()
 			for x=1, w do
 				if map.tiles[y] and map.tiles[y][x] then
 					local id = map.tiles[y][x]
-					if id == 1 then love.graphics.rectangle("fill", (x-1)*32, (y-1)*32, 32, 32) end
+					local ts = tiles.tileSize
+					if id == 1 then love.graphics.rectangle("fill", (x-1)*ts, (y-1)*ts, ts, ts) end
 				end
 			end
 		end
