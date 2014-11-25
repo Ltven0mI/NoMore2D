@@ -15,8 +15,8 @@ camera.pushCount = 0
 
 -- Callbacks --
 function camera.load(args)
-	camera.window.w = love.graphics.getWidth()
-	camera.window.h = love.graphics.getHeight()
+	camera.window.w = main.w
+	camera.window.h = main.h
 end
 
 function camera.draw()
@@ -30,6 +30,15 @@ function camera.setPos(x,y)
 		camera.var.pos.y = math.round(y)
 	else
 		debug.log("[ERROR] Incorrect call to function 'camera.setPos(x,y)'")
+	end
+end
+
+function camera.centerPos(x,y)
+	if x and y then
+		camera.var.pos.x = math.round(x-main.width/2)
+		camera.var.pos.y = math.round(y-main.height/2)
+	else
+		debug.log("[ERROR] Incorrect call to function 'camera.center(x,y)'")
 	end
 end
 
@@ -53,7 +62,6 @@ function camera.setMode(mode)
 	if mode and type(mode) == "string" then
 		if mode == "world" or mode == "screen" then
 			camera.var.mode = mode
-
 			camera.updateSettings()
 		else
 			debug.log("[WARNING] Argument 'mode' in call to function 'camera.setMode(mode)' must be 'world' or 'screen'")
@@ -69,7 +77,7 @@ end
 
 function camera.getMouse()
 	local mx, my = love.mouse.getPosition()
-	if camera.var.mode == "world" then return mx-camera.var.pos.x, my-camera.var.pos.y elseif camera.var.mode == "screen" then return mx, my end
+	if camera.var.mode == "world" then return mx+camera.var.pos.x, my+camera.var.pos.y elseif camera.var.mode == "screen" then return mx, my end
 end
 
 function camera.push()
@@ -96,7 +104,7 @@ end
 
 function camera.updateSettings()
 	love.graphics.origin()
-	if camera.var.mode == "world" then love.graphics.translate(camera.var.pos.x, camera.var.pos.y) else love.graphics.translate(0, 0) end
+	if camera.var.mode == "world" then love.graphics.translate(-camera.var.pos.x, -camera.var.pos.y) else love.graphics.translate(0, 0) end
 	love.graphics.rotate(math.rad(camera.var.rot))
 end
 
