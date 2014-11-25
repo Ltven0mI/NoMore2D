@@ -32,13 +32,14 @@ function player:update(dt)
 
 	local map = world.map
 	if map then
-		local ptx, pty = math.floor(self.pos.x/32), math.floor(self.pos.y/32) --Player Tile Cords
+		local ts = tiles.tileSize
+		local ptx, pty = math.floor(self.pos.x/ts), math.floor(self.pos.y/ts) --Player Tile Cords
 		local sx, sy, ex, ey = math.clamp(ptx-5, 1, map.size.w), math.clamp(pty-5, 1, map.size.h), math.clamp(ptx+5, 1, map.size.w), math.clamp(pty+5, 1, map.size.h) --Start and End Cords
 		for y=sy, ey do
 			for x=sx, ex do
 				local tile = map.tiles[y][x]
 				if tile == 1 then
-					self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*32, (y-1)*32, 32, 32, 0, 0)
+					self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*ts, (y-1)*ts, ts, ts, 0, 0)
 				end
 			end
 		end
