@@ -56,9 +56,20 @@ end
 function math.lerp(n1,n2,t)
 	if n1 and n2 and t then
 		return n1 + (n2-n1)*t
-		--return (1-t)*n1 + t*n2
 	else
 		debug.log("[ERROR] Incorrect call to function 'math.lerp(n1,n2,t)'")
+	end
+end
+
+function math.norm(x,y)
+	if x and y then
+		local mag = math.sqrt((x*x)+(y*y))
+		local xx, yy = math.abs(x/mag), math.abs(y/mag)
+		if xx ~= xx then xx = 0 end
+		if yy ~= yy then yy = 0 end
+		return xx, yy
+	else
+		debug.log("[ERROR] Incorrect call to function 'math.norm(x,y)'")
 	end
 end
 
