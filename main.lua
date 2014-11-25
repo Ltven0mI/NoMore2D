@@ -163,6 +163,8 @@ function love.quit()
 end
 
 function love.resize(w,h)
+	main.width = w
+	main.height = h
 	main.loader.resize(w, h)
 end
 
@@ -175,8 +177,6 @@ function love.threaderror(thread,errorstr)
 end
 
 function love.update(dt)
-	main.width = love.graphics.getWidth()
-	main.height = love.graphics.getHeight()
 	main.loader.update(dt)
 end
 
