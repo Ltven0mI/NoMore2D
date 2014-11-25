@@ -24,8 +24,23 @@ function player:update(dt)
 	if self.rot < 0 then self.rot = 270+(self.rot+90) end
 	self.rot = (math.floor((self.rot+22.5)/45))*45
 
-	self.pos.x = self.pos.x + self.vel.x*dt
-	self.pos.y = self.pos.y + self.vel.y*dt
+	self.vel.x = self.vel.x*dt
+	self.vel.y = self.vel.y*dt
+
+	self.pos.x = self.pos.x + self.vel.x
+	self.pos.y = self.pos.y + self.vel.y
+
+	local map = world.map
+	if map then
+		local ptx, pty = math.floor(self.pos.x/32), math.floor(self.pos.y/32) --Player Tile Cords
+		local sx, sy, ex, ey = math.clamp(ptx-5, 1, map.size.w), math.clamp(pty-5, 1, map.size.h), math.clamp(ptx+5, 1, map.size.w), math.clamp(pty+5, 1, map.size.h) --Start and End Cords
+		for y=sy, ey do
+			for x=sx, ex do
+				local tile = map.tiles[y][x]
+				self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*32, (y-1)*32, 32, 32, 0, 0)
+			end
+		end
+	end
 
 	camera.centerPos(self.pos.x+self.size/2, self.pos.y+self.size/2)
 end
@@ -43,8 +58,8 @@ function player:new()
 	local obj = {}
 	obj.pos = {x=0,y=0}
 	obj.vel = {x=0,y=0}
-	obj.size = 64
-	obj.speed = 500
+	obj.size = 32
+	obj.speed = 250
 	obj.rot = 0
 	return obj
 end
