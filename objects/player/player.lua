@@ -37,7 +37,9 @@ function player:update(dt)
 		for y=sy, ey do
 			for x=sx, ex do
 				local tile = map.tiles[y][x]
-				self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*32, (y-1)*32, 32, 32, 0, 0)
+				if tile == 1 then
+					self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*32, (y-1)*32, 32, 32, 0, 0)
+				end
 			end
 		end
 	end
