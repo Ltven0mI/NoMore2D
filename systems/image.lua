@@ -33,6 +33,7 @@ function image.getImages(dir,isrepeat,images)
 					if holdImg and type(holdImg) == "userdata" then
 						image.imageCount = image.imageCount + 1
 						if not images[key] then
+							holdImg:setFilter("nearest")
 							images[key] = holdImg
 							debug.log("[IMAGE] Added image '"..key.."' from directory '"..dir.."'")
 						else
