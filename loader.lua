@@ -32,6 +32,8 @@ loader.systemCount = 0
 loader.highestPriority = 0
 loader.sortedSystems = {}
 
+loader.curPri = 0
+
 loader.lib = {}		--Loader Libraries
 
 -- Callbacks --
@@ -39,7 +41,7 @@ function loader.draw()
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.draw[i]
-		if sys then sys.draw(); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.draw(); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -47,7 +49,7 @@ function loader.errhand(msg)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.errhand[i]
-		if sys then sys.errhand(msg); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.errhand(msg); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -55,7 +57,7 @@ function loader.focus(f)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.focus[i]
-		if sys then sys.focus(f); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.focus(f); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -63,7 +65,7 @@ function loader.gamepadaxis(joystick,axis,value)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.gamepadaxis[i]
-		if sys then sys.gamepadaxis(joystick, axis, value); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.gamepadaxis(joystick, axis, value); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -71,7 +73,7 @@ function loader.gamepadpressed(joystick,button)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.gamepadpressed[i]
-		if sys then sys.gamepadpressed(joystick, button); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.gamepadpressed(joystick, button); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -79,7 +81,7 @@ function loader.gamepadreleased(joystick,button)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.gamepadreleased[i]
-		if sys then sys.gamepadreleased(joystick, button); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.gamepadreleased(joystick, button); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -87,7 +89,7 @@ function loader.joystickadded(joystick)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.joystickadded[i]
-		if sys then sys.joystickadded(joystick); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.joystickadded(joystick); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -95,7 +97,7 @@ function loader.joystickaxis(joystick,axis,value)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.joystickaxis[i]
-		if sys then sys.joystickaxis(joystick, axis, value); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.joystickaxis(joystick, axis, value); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -103,7 +105,7 @@ function loader.joystickhat(joystick,hat,direction)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.joystickhat[i]
-		if sys then sys.joystickhat(joystick, hat, direction); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.joystickhat(joystick, hat, direction); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -111,7 +113,7 @@ function loader.joystickpressed(joystick,button)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.joystickpressed[i]
-		if sys then sys.joystickpressed(joystick, button); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.joystickpressed(joystick, button); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -119,7 +121,7 @@ function loader.joystickreleased(joystick,button)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.joystickreleased[i]
-		if sys then sys.joystickreleased(joystick, button); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.joystickreleased(joystick, button); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -127,7 +129,7 @@ function loader.joystickremoved(joystick)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.joystickremoved[i]
-		if sys then sys.joystickremoved(joystick); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.joystickremoved(joystick); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -135,7 +137,7 @@ function loader.keypressed(key,isrepeat)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.keypressed[i]
-		if sys then sys.keypressed(key, isrepeat); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.keypressed(key, isrepeat); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -143,7 +145,7 @@ function loader.keyreleased(key)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.keyreleased[i]
-		if sys then sys.keyreleased(key); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.keyreleased(key); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -154,7 +156,7 @@ function loader.load(arg)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.load[i]
-		if sys then sys.load(arg); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.load(arg); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -162,7 +164,7 @@ function loader.mousefocus(f)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.mousefocus[i]
-		if sys then sys.mousefocus(f); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.mousefocus(f); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -170,7 +172,7 @@ function loader.mousepressed(x,y,button)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.mousepressed[i]
-		if sys then sys.mousepressed(x, y, button); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.mousepressed(x, y, button); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -178,7 +180,7 @@ function loader.mousereleased(x,y,button)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.mousereleased[i]
-		if sys then sys.mousereleased(x, y, button); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.mousereleased(x, y, button); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -186,7 +188,7 @@ function loader.quit()
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.quit[i]
-		if sys then sys.quit(); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.quit(); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -194,7 +196,7 @@ function loader.resize(w,h)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.resize[i]
-		if sys then sys.resize(w, h); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.resize(w, h); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -202,7 +204,7 @@ function loader.textinput(text)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.textinput[i]
-		if sys then sys.textinput(text); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.textinput(text); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -210,7 +212,7 @@ function loader.threaderror(thread,errorstr)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.threaderror[i]
-		if sys then sys.threaderror(thread, errorstr); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.threaderror(thread, errorstr); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -218,7 +220,7 @@ function loader.update(dt)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.update[i]
-		if sys then sys.update(dt); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.update(dt); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
@@ -226,11 +228,15 @@ function loader.visible(v)
 	local i = 1
 	while i <= loader.highestPriority do
 		local sys = loader.sys.cb.visible[i]
-		if sys then sys.visible(v); i = i + 0.1 else i = math.floor(i) + 1 end
+		if sys then sys.visible(v); loader.curPri = i; i = i + 0.1 else i = math.floor(i) + 1 end
 	end
 end
 
 -- Functions --
+function loader.getPriority()
+	return loader.curPri
+end
+
 function loader.getSystems(dir,isrepeat,systems)
 	if isrepeat == nil then isrepeat = false end
 	if systems == nil then systems = {} end
@@ -287,7 +293,27 @@ function loader.sortSystems(systems)
 							if holdNewPri > loader.highestPriority then loader.highestPriority = holdNewPri end
 						end
 					elseif type(priority) == "table" then
-
+						for priKey, pri in pairs(priority) do
+							local holdSys = loader.sortedSystems[pri]
+							if not holdSys then
+								print("[LOADER] Giving system '"..key.."' priority '"..pri.."'")
+								loader.sortedSystems[pri] = sys
+								if pri > loader.highestPriority then loader.highestPriority = pri end
+							else
+								local holdKey = holdSys.systemKey
+								local holdNewPri = pri
+								local holdNewSys = holdSys
+								print("[LOADER] Tried giving system '"..key.."' priority '"..pri.."'")
+								print("[LOADER] System '"..holdKey.."' with priority '"..pri.."' already exsits")
+								while holdNewSys do
+									holdNewPri = holdNewPri + 0.1
+									holdNewSys = loader.sortedSystems[holdNewPri]
+								end
+								print("[LOADER] Giving system '"..key.."' priority '"..holdNewPri.."'")
+								loader.sortedSystems[holdNewPri] = sys
+								if holdNewPri > loader.highestPriority then loader.highestPriority = holdNewPri end
+							end
+						end
 					end
 				end
 			end
