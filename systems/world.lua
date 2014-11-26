@@ -29,13 +29,11 @@ function world.draw()
 				if map.tiles[y] and map.tiles[y][x] then
 					local holdTile = map.tiles[y][x]
 					if holdTile.image and holdTile.drawable then
-						if holdTile.isFloor then
-							if (not holdTile.isFloor and pri == world.runPriority[2]) or (holdTile.isFloor and pri == world.runPriority[1]) then
-								ui.push()
-									ui.setMode("world")
-									ui.draw(holdTile.image, (x-1)*ts, (y-1)*ts, ts, ts)
-								ui.pop()
-							end
+						if (not holdTile.isFloor and pri == world.runPriority[2]) or (holdTile.isFloor and pri == world.runPriority[1]) then
+							ui.push()
+								ui.setMode("world")
+								ui.draw(holdTile.image, (x-1)*ts, (y-1)*ts, ts, ts)
+							ui.pop()
 						end
 					end
 				end
