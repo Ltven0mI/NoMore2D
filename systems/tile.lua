@@ -3,7 +3,7 @@ tile.systemKey = "tile"
 tile.runPriority = 4
 
 -- Variables --
-tile.tileSize = 48
+tile.tileSize = 40
 tile.tiles = {}
 tile.tileCount = 0
 
@@ -49,6 +49,7 @@ function tile.getTiles(dir,isrepeat,tiles)
 								if holdTile.imageKey == nil then holdTile.imageKey = "missing" end
 								if holdTile.collision == nil then holdTile.collision = false end
 								if holdTile.drawable == nil then holdTile.drawable = true end
+								if holdTile.isFloor == nil then holdTile.isFloor = true end
 								holdTile.image = image.getImage(holdTile.imageKey)
 								tile.tileCount = tile.tileCount + 1
 								tiles[key] = holdTile
