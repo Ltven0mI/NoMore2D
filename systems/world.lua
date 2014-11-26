@@ -1,6 +1,6 @@
 world = {}
 world.systemKey = "world"
-world.runPriority = 6
+world.runPriority = {5,7}
 
 -- Variables --
 world.map = {}

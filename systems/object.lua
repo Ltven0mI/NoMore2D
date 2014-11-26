@@ -1,7 +1,7 @@
 -- System Settings --
 object = {}
 object.systemKey = "object"
-object.runPriority = 5
+object.runPriority = 6
 
 -- Variables --
 object.objects = {}
