@@ -3,7 +3,7 @@ tile.systemKey = "tile"
 tile.runPriority = 4
 
 -- Variables --
-tile.tileSize = 64
+tile.tileSize = 48
 tile.tiles = {}
 tile.tileCount = 0
 
