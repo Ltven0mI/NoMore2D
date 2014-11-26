@@ -275,6 +275,25 @@ function ui.draw(drawable,x,y,w,h,r)
 	end
 end
 
+function ui.rectangle(x,y,w,h,style)
+	if x and y and w and h then
+		camera.push()
+			camera.setMode(ui.var.mode)
+			if not style then style = ui.var.style end
+
+			local lw = ui.var.lineWidth
+
+			if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
+			if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
+			if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
+			
+		camera.pop()
+	else
+		debug.log("[ERROR] Incorrect call to function 'ui.rectangle(x,y,w,h,style)'")
+		return nil
+	end
+end
+
 function ui.tickbox(x,y,w,h,act,style,btn)
 	if x and y and w and h and act ~= nil then
 		camera.push()
