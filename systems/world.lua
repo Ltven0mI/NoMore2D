@@ -8,7 +8,7 @@ world.rd = 100 --RenderDistance
 
 -- Callbacks --
 function world.load()
-	world.loadMap("test")
+	world.loadMap("level_01")
 
 	world.rdShader = love.graphics.newShader [[
 		vec4 effect ( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords){
