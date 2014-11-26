@@ -32,14 +32,20 @@ function player:update(dt)
 
 	local map = world.map
 	if map then
-		local ts = tiles.tileSize
-		local ptx, pty = math.floor(self.pos.x/ts), math.floor(self.pos.y/ts) --Player Tile Cords
-		local sx, sy, ex, ey = math.clamp(ptx-5, 1, map.size.w), math.clamp(pty-5, 1, map.size.h), math.clamp(ptx+5, 1, map.size.w), math.clamp(pty+5, 1, map.size.h) --Start and End Cords
-		for y=sy, ey do
-			for x=sx, ex do
-				local tile = map.tiles[y][x]
-				if tile == 1 then
-					self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*ts, (y-1)*ts, ts, ts, 0, 0)
+		if world.checkMap(map) then
+			local w, h = map.size.w, map.size.h
+			local ts = tile.tileSize
+			local ptx, pty = math.floor(self.pos.x/ts), math.floor(self.pos.y/ts) --Player Tile Cords
+			local sx, sy, ex, ey = math.clamp(ptx-5, 1, map.size.w), math.clamp(pty-5, 1, map.size.h), math.clamp(ptx+5, 1, map.size.w), math.clamp(pty+5, 1, map.size.h) --Start and End Cords
+
+			for y=sy, ey do
+				for x=sx, ex do
+					if map.tiles[y] and map.tiles[y][x] then
+						local holdTile = map.tiles[y][x]
+						if holdTile.collision then
+							self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*ts, (y-1)*ts, ts, ts, 0, 0)
+						end
+					end
 				end
 			end
 		end
@@ -52,7 +58,6 @@ function player:draw()
 	ui.push()
 		ui.setMode("world")
 		ui.draw(image.getImage("player_01"), math.round(self.pos.x), math.round(self.pos.y), self.size, self.size, self.rot)
-		ui.draw(image.getImage("player_01"), 0, 0, self.size, self.size)
 	ui.pop()
 end
 
