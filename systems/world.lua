@@ -90,4 +90,19 @@ function world.checkMap(map)
 	end
 end
 
+function world.getTile(x,y)
+	if x and y then
+		local holdTile = nil
+		local ts = tile.tileSize
+		local map = world.map
+		x, y = math.ceil(x/ts), math.ceil(y/ts)
+		if map and x > 0 and x <= map.size.w and y > 0 and y <= map.size.h then
+			if map.tiles[y] and map.tiles[y][x] then holdTile = map.tiles[y][x] end
+		end
+		return holdTile
+	else
+		debug.log("[ERROR] Incorrect call to function 'world.getTile(x,y)'")
+	end
+end
+
 return world
