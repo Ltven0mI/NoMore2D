@@ -53,6 +53,15 @@ function player:draw()
 	ui.pop()
 end
 
+function player:keypressed(key)
+	if key == input.interact then
+		local tile = self:getTile(self.facing)
+		if tile then
+			if tile.interact then tile:interact() end
+		end
+	end
+end
+
 -- Functions --
 function player:checkCollision()
 	local map = world.map
@@ -63,15 +72,6 @@ function player:checkCollision()
 			local ptx, pty = math.floor(self.pos.x/ts), math.floor(self.pos.y/ts) --Player Tile Cords
 			local sx, sy, ex, ey = math.clamp(ptx-5, 1, map.size.w), math.clamp(pty-5, 1, map.size.h), math.clamp(ptx+5, 1, map.size.w), math.clamp(pty+5, 1, map.size.h) --Start and End Cords
 
-			if self.vel.x ~= 0 then
-				self.adjTiles["left"] = nil
-				self.adjTiles["right"] = nil
-			end
-			if self.vel.y ~= 0 then
-				self.adjTiles["up"] = nil
-				self.adjTiles["down"] = nil
-			end
-
 			for y=sy, ey do
 				for x=sx, ex do
 					if map.tiles[y] and map.tiles[y][x] then
@@ -79,14 +79,30 @@ function player:checkCollision()
 						if holdTile.collision then
 							local side
 							self.pos.x, self.pos.y, self.vel.x, self.vel.y, side = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*ts, (y-1)*ts, ts, ts, 0, 0)
-							if side ~= "" then
-								self.adjTiles[side] = map.tiles[y][x]
-							end
 						end
 					end
 				end
 			end
 		end
+	end
+end
+
+function player:getTile(side)
+	if side then
+		local holdTile = nil
+		local ts = tile.tileSize
+		if side == "up" then
+			holdTile = world.getTile(self.pos.x+self.size/2, self.pos.y+self.size/2-ts)
+		elseif side == "down" then
+			holdTile = world.getTile(self.pos.x+self.size/2, self.pos.y+self.size/2+ts)
+		elseif side == "left" then
+			holdTile = world.getTile(self.pos.x+self.size/2-ts, self.pos.y+self.size/2)
+		elseif side == "right" then
+			holdTile = world.getTile(self.pos.x+self.size/2+ts, self.pos.y+self.size/2)
+		end
+		return holdTile
+	else
+		debug.log("[ERROR] Incorrect call to function 'player:getTile(side)'")
 	end
 end
 
@@ -99,8 +115,6 @@ function player:new()
 	obj.rot = 0
 	obj.curRot = 0
 	obj.facing = ""
-
-	obj.adjTiles = {}
 	return obj
 end
 
