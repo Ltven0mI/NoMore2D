@@ -15,7 +15,7 @@ function collision.boundingBox(x1,y1,w1,h1,vx1,vy1,x2,y2,w2,h2)
 				if (r1>l2 and r1<=r2 and l1<l2) or (l1<r2 and l1>=l2 and r1>r2) or (l1<l2 and r1>r2) or (l1>=l2 and l1<r2 and r1<=r2 and r1>l2) then --Checks if there is any collision on the y plane
 					vy1 = 0
 					hy = y2+h2
-					side = "top"
+					side = "up"
 				end
 			end
 		end
@@ -24,7 +24,7 @@ function collision.boundingBox(x1,y1,w1,h1,vx1,vy1,x2,y2,w2,h2)
 				if (r1>l2 and r1<=r2 and l1<l2) or (l1<r2 and l1>=l2 and r1>r2) or (l1<l2 and r1>r2) or (l1>=l2 and l1<r2 and r1<=r2 and r1>l2) then --Checks if there is any collision on the y plane
 					vy1 = 0
 					hy = y2-h1
-					side = "bot"
+					side = "down"
 				end
 			end
 		end
