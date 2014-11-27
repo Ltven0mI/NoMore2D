@@ -24,12 +24,37 @@ function player:update(dt)
 	if self.rot < 0 then self.rot = 270+(self.rot+90) end
 	self.rot = (math.floor((self.rot+22.5)/45))*45
 
+	if self.rot > -22.5 and self.rot < 22.5 then self.facing = "up" end
+	if self.rot > 22.5 and self.rot < 67.5 then self.facing = "upright" end
+	if self.rot > 67.5 and self.rot < 112.5 then self.facing = "right" end
+	if self.rot > 112.5 and self.rot < 157.5 then self.facing = "downright" end
+	if self.rot > 157.5 and self.rot < 202.5 then self.facing = "down" end
+	if self.rot > 202.5 and self.rot < 247.5 then self.facing = "downleft" end
+	if self.rot > 247.5 and self.rot < 292.5 then self.facing = "left" end
+	if self.rot > 292.5 and self.rot < 337.5 then self.facing = "upleft" end
+
 	self.vel.x = self.vel.x*dt
 	self.vel.y = self.vel.y*dt
 
 	self.pos.x = self.pos.x + self.vel.x
 	self.pos.y = self.pos.y + self.vel.y
 
+	self:checkCollision()
+
+	self.curRot = math.anglerp(self.curRot, self.rot, 0.1)
+
+	camera.centerPos(self.pos.x+self.size/2, self.pos.y+self.size/2)
+end
+
+function player:draw()
+	ui.push()
+		ui.setMode("world")
+		ui.draw(image.getImage("player_01"), math.round(self.pos.x), math.round(self.pos.y), self.size, self.size, self.curRot)
+	ui.pop()
+end
+
+-- Functions --
+function player:checkCollision()
 	local map = world.map
 	if map then
 		if world.checkMap(map) then
@@ -38,30 +63,33 @@ function player:update(dt)
 			local ptx, pty = math.floor(self.pos.x/ts), math.floor(self.pos.y/ts) --Player Tile Cords
 			local sx, sy, ex, ey = math.clamp(ptx-5, 1, map.size.w), math.clamp(pty-5, 1, map.size.h), math.clamp(ptx+5, 1, map.size.w), math.clamp(pty+5, 1, map.size.h) --Start and End Cords
 
+			if self.vel.x ~= 0 then
+				self.adjTiles["left"] = nil
+				self.adjTiles["right"] = nil
+			end
+			if self.vel.y ~= 0 then
+				self.adjTiles["up"] = nil
+				self.adjTiles["down"] = nil
+			end
+
 			for y=sy, ey do
 				for x=sx, ex do
 					if map.tiles[y] and map.tiles[y][x] then
 						local holdTile = map.tiles[y][x]
 						if holdTile.collision then
-							self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*ts, (y-1)*ts, ts, ts, 0, 0)
+							local side
+							self.pos.x, self.pos.y, self.vel.x, self.vel.y, side = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*ts, (y-1)*ts, ts, ts, 0, 0)
+							if side ~= "" then
+								self.adjTiles[side] = map.tiles[y][x]
+							end
 						end
 					end
 				end
 			end
 		end
 	end
-
-	camera.centerPos(self.pos.x+self.size/2, self.pos.y+self.size/2)
 end
 
-function player:draw()
-	ui.push()
-		ui.setMode("world")
-		ui.draw(image.getImage("player_01"), math.round(self.pos.x), math.round(self.pos.y), self.size, self.size, self.rot)
-	ui.pop()
-end
-
--- Functions --
 function player:new()
 	local obj = {}
 	obj.pos = {x=0,y=0}
@@ -69,6 +97,10 @@ function player:new()
 	obj.size = 32
 	obj.speed = 250
 	obj.rot = 0
+	obj.curRot = 0
+	obj.facing = ""
+
+	obj.adjTiles = {}
 	return obj
 end
 
