@@ -55,7 +55,8 @@ end
 
 function math.lerp(n1,n2,t)
 	if n1 and n2 and t then
-		return n1 + (n2-n1)*t
+		local dt = love.timer.getDelta()
+		return n1 + ((n2-n1)*t)*(dt*100)
 	else
 		debug.log("[ERROR] Incorrect call to function 'math.lerp(n1,n2,t)'")
 	end
