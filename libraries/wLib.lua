@@ -61,6 +61,24 @@ function math.lerp(n1,n2,t)
 	end
 end
 
+function math.anglerp(n1,n2,t)
+	if n1 and n2 and t then
+		local ad, bd, cd = math.abs(n1-(360+n2)), math.abs(n2-(360+n1)), math.abs(n2-n1)
+		if ad < bd and ad < cd then
+			n1 = math.lerp(n1, n1+ad, t)
+		elseif bd < ad and bd < cd then
+			n1 = math.lerp(n1, n1-bd, t)
+		else
+			n1 = math.lerp(n1, n2, t)
+		end
+		if n1 > 360 then n1 = n1 - 360 end
+		if n1 < 0 then n1 = n1 + 360 end
+		return n1
+	else
+		debug.log("[ERROR] Incorrect call to function 'math.anglerp(n1,n2,t)'")
+	end
+end
+
 function math.norm(x,y)
 	if x and y then
 		local mag = math.sqrt((x*x)+(y*y))
