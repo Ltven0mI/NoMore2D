@@ -6,6 +6,8 @@ input.runPriority = 100
 input.curText = ""
 input.keys = {}
 
+input.interact = "e"
+
 -- Callbacks --
 
 function input.draw()
