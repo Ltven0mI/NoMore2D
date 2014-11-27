@@ -1,7 +1,7 @@
 -- System Settings --
 object = {}
 object.systemKey = "object"
-object.runPriority = 6
+object.runPriority = 7
 
 -- Variables --
 object.objects = {}
@@ -189,7 +189,7 @@ function object.getObjects(dir,isrepeat)
 				if love.filesystem.isFile(dir.."/"..item) then
 					local holdObj = require(dir.."/"..key)
 					if holdObj and type(holdObj) == "table" then
-						print("[OBJECT] Adding object '"..key.."' from directory '"..dir.."'")
+						debug.log("[OBJECT] Adding object '"..key.."' from directory '"..dir.."'")
 						object.objects[key] = holdObj
 					end
 				elseif love.filesystem.isDirectory(dir.."/"..item) and item ~= "blacklist" then
