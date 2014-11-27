@@ -69,8 +69,8 @@ function player:checkCollision()
 		if world.checkMap(map) then
 			local w, h = map.size.w, map.size.h
 			local ts = tile.tileSize
-			local ptx, pty = math.floor(self.pos.x/ts), math.floor(self.pos.y/ts) --Player Tile Cords
-			local sx, sy, ex, ey = math.clamp(ptx-5, 1, map.size.w), math.clamp(pty-5, 1, map.size.h), math.clamp(ptx+5, 1, map.size.w), math.clamp(pty+5, 1, map.size.h) --Start and End Cords
+			local ptx, pty = math.floor((self.pos.x+self.size/2+ts)/ts), math.floor((self.pos.y+self.size/2+ts)/ts) --Player Tile Cords
+			local sx, sy, ex, ey = math.clamp(ptx-2, 1, map.size.w), math.clamp(pty-2, 1, map.size.h), math.clamp(ptx+2, 1, map.size.w), math.clamp(pty+2, 1, map.size.h) --Start and End Cords
 
 			for y=sy, ey do
 				for x=sx, ex do
