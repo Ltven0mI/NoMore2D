@@ -98,6 +98,7 @@ end
 
 function love.update(dt)
 	main.loader.update(dt)
+	if collectgarbage("count")/1024 > 512 then collectgarbage("collect") end
 end
 
 function love.visible(v)
