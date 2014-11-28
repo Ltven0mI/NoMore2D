@@ -35,6 +35,11 @@ function world.draw()
 								ui.push()
 									ui.setMode("world")
 									ui.draw(holdTile.image, (x-1)*ts, (y-1)*ts, ts, ts)
+									if main.colDebug == true then
+										local col = holdTile.collider
+										if holdTile.collision then love.graphics.setColor(255,0,50,100) else love.graphics.setColor(0,0,255,100) end
+										love.graphics.rectangle("fill", (x-1)*ts+ts*col.x, (y-1)*ts+ts*col.y, ts*col.w, ts*col.h)
+									end
 								ui.pop()
 							end
 						end
