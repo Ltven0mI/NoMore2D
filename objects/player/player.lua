@@ -77,8 +77,8 @@ function player:checkCollision()
 					if map.tiles[y] and map.tiles[y][x] then
 						local holdTile = map.tiles[y][x]
 						if holdTile.collision then
-							local side
-							self.pos.x, self.pos.y, self.vel.x, self.vel.y, side = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*ts, (y-1)*ts, ts, ts, 0, 0)
+							local col = holdTile.collider
+							self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*ts+ts*col.x, (y-1)*ts+ts*col.y, ts*col.w, ts*col.h, 0, 0)
 						end
 					end
 				end
