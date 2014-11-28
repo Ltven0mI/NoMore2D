@@ -1,5 +1,14 @@
 player = {}
 
+-- Variables --
+player.pos = {x=0,y=0}
+player.vel = {x=0,y=0}
+player.size = 32
+player.speed = 250
+player.rot = 0
+player.curRot = 0
+player.facing = ""
+
 -- Callbacks --
 function player:update(dt)
 	self.vel.x, self.vel.y = 0, 0
@@ -104,18 +113,6 @@ function player:getTile(side)
 	else
 		debug.log("[ERROR] Incorrect call to function 'player:getTile(side)'")
 	end
-end
-
-function player:new()
-	local obj = {}
-	obj.pos = {x=0,y=0}
-	obj.vel = {x=0,y=0}
-	obj.size = 32
-	obj.speed = 250
-	obj.rot = 0
-	obj.curRot = 0
-	obj.facing = ""
-	return obj
 end
 
 return player
