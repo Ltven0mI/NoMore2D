@@ -162,8 +162,7 @@ function object.new(...)
 	if objType then
 		local holdType = object.objects[objType]
 		if holdType then
-			local holdObject = {}
-			if holdType.new then holdObject = holdType:new() end
+			local holdObject = cloneTable(holdType, {"function"})
 			local uid = object.createUID()
 			holdObject.uid = uid
 			object.createdObjects[uid] = holdObject
