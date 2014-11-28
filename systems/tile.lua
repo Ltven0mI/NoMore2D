@@ -19,7 +19,7 @@ function tile.cloneTile(key)
 			local holdTile = tile.tiles[key]
 			local newTile = {}
 			for key, val in pairs(holdTile) do
-				newTile[key] = val
+				newTile[key] = holdTile[key]
 			end
 			return newTile
 		else
@@ -52,8 +52,13 @@ function tile.getTiles(dir,isrepeat,tiles)
 								if holdTile.isFloor == nil then holdTile.isFloor = true end
 								if holdTile.collider == nil or (holdTile.collider and (not holdTile.collider.x or not holdTile.collider.y or not holdTile.collider.w or not holdTile.collider.h)) then
 									holdTile.collider = {x=0,y=0,w=1,h=1}
+								else
+									local col = holdTile.collider
+									col.x = math.clamp(col.x, 0, 0.9)
+									col.y = math.clamp(col.y, 0, 0.9)
+									col.w = math.clamp(col.w, 0.1, 1-col.x)
+									col.h = math.clamp(col.h, 0.1, 1-col.y)
 								end
-								holdTile.image = image.getImage(holdTile.imageKey)
 								tile.tileCount = tile.tileCount + 1
 								tiles[key] = holdTile
 								tiles[tile.tileCount] = holdTile
