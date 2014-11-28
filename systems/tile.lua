@@ -37,6 +37,7 @@ function tile.addTiles()
 	tile.addTile("grass_flat")
 	tile.addTile("dirt_flat")
 	tile.addTile("check_bw")
+	tile.addTile("tile_flat_w")
 end
 
 function tile.addTile(key)
