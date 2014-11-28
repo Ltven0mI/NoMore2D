@@ -50,6 +50,9 @@ function tile.getTiles(dir,isrepeat,tiles)
 								if holdTile.collision == nil then holdTile.collision = false end
 								if holdTile.drawable == nil then holdTile.drawable = true end
 								if holdTile.isFloor == nil then holdTile.isFloor = true end
+								if holdTile.collider == nil or (holdTile.collider and (not holdTile.collider.x or not holdTile.collider.y or not holdTile.collider.w or not holdTile.collider.h)) then
+									holdTile.collider = {x=0,y=0,w=1,h=1}
+								end
 								holdTile.image = image.getImage(holdTile.imageKey)
 								tile.tileCount = tile.tileCount + 1
 								tiles[key] = holdTile
