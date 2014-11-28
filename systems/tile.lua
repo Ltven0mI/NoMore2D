@@ -38,6 +38,7 @@ function tile.addTiles()
 	tile.addTile("dirt_flat")
 	tile.addTile("check_bw")
 	tile.addTile("tile_flat_w")
+	tile.addTile("door_wood")
 end
 
 function tile.addTile(key)
