@@ -7,7 +7,7 @@ world.map = {}
 
 -- Callbacks --
 function world.load()
-	world.genWorld(100,100)
+	world.genWorld(300,300)
 
 	world.rdShader = love.graphics.newShader [[
 		vec4 effect ( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords){
@@ -30,11 +30,11 @@ function world.draw()
 				for x=sx, ex do
 					if map.tiles[y] and map.tiles[y][x] then
 						local holdTile = map.tiles[y][x]
-						if holdTile.image and holdTile.drawable then
+						if holdTile.drawable then
 							if (not holdTile.isFloor and pri == world.runPriority[2]) or (holdTile.isFloor and pri == world.runPriority[1]) then
 								ui.push()
 									ui.setMode("world")
-									ui.draw(holdTile.image, (x-1)*ts, (y-1)*ts, ts, ts)
+									ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
 									if main.colDebug == true then
 										local col = holdTile.collider
 										if holdTile.collision then love.graphics.setColor(255,0,50,100) else love.graphics.setColor(0,0,255,100) end
@@ -84,7 +84,7 @@ function world.genWorld(w,h)
 	for y=1, h do
 		map.tiles[y] = {}
 		for x=1, w do
-			map.tiles[y][x] = math.random(1,tile.tileCount)
+			map.tiles[y][x] = 1--math.random(1,tile.tileCount)
 		end
 	end
 	if world.checkMap(map) then
