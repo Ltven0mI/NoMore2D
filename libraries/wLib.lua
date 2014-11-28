@@ -33,6 +33,23 @@ function printTable(table,params,ind,it,txt)
 	return txt
 end
 
+function cloneTable(tab,ignore,newTab)
+	if ignore == nil then ignore = {} end
+	if newTab == nil then newTab = {} end
+
+	for key, val in pairs(tab) do
+		local doIgnore = false
+		local vType = type(val)
+		for i, str in pairs(ignore) do
+			if vType == str then doIgnore = true; break end
+		end
+		if not doIgnore then
+			if vType ~= "table" then newTab[key] = val else newTab[key] = cloneTable(val, ignore) end
+		end
+	end
+	return newTab
+end
+
 -- Math Functions
 function math.dist(ax, az, bx, bz) 
     return math.sqrt((bx - ax)*(bx - ax) + (bz - az)*(bz - az));
