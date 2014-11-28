@@ -65,7 +65,10 @@ end
 function player:keypressed(key)
 	if key == input.interact then
 		local tile = self:getTile(self.facing)
-		if tile then
+		local inTile = self:getTile("")
+		if inTile and not inTile.isFloor then
+			if inTile.interact then inTile:interact() end
+		elseif tile and not tile.isFloor then
 			if tile.interact then tile:interact() end
 		end
 	end
@@ -108,6 +111,8 @@ function player:getTile(side)
 			holdTile = world.getTile(self.pos.x+self.size/2-ts, self.pos.y+self.size/2)
 		elseif side == "right" then
 			holdTile = world.getTile(self.pos.x+self.size/2+ts, self.pos.y+self.size/2)
+		elseif side == "" then
+			holdTile = world.getTile(self.pos.x+self.size/2, self.pos.y+self.size/2)
 		end
 		return holdTile
 	else
