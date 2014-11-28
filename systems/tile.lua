@@ -7,9 +7,12 @@ tile.tileSize = 40
 tile.tiles = {}
 tile.tileCount = 0
 
+tile.unsortedTiles = {}
+
 -- Callbacks --
 function tile.load()
 	tile.getTiles("/assets/tiles")
+	tile.addTiles()
 end
 
 -- Functions --
@@ -27,6 +30,27 @@ function tile.cloneTile(key)
 		end
 	else
 		debug.log("[ERROR] Incorrect call to function 'tile.cloneTile(key)'")
+	end
+end
+
+function tile.addTiles()
+	tile.addTile("grass_flat")
+	tile.addTile("dirt_flat")
+	tile.addTile("check_bw")
+end
+
+function tile.addTile(key)
+	if key then
+		local holdTile = tile.unsortedTiles[key]
+		if holdTile then
+			tile.tileCount = tile.tileCount + 1
+			tile.tiles[tile.tileCount] = holdTile
+			tile.tiles[key] = holdTile
+		else
+			debug.log("[WARNING] No existing tile with the key '"..key.."'")
+		end
+	else
+		debug.log("[ERROR] Incorrect call to function 'tile.addTile(key)'")
 	end
 end
 
@@ -59,9 +83,7 @@ function tile.getTiles(dir,isrepeat,tiles)
 									col.w = math.clamp(col.w, 0.1, 1-col.x)
 									col.h = math.clamp(col.h, 0.1, 1-col.y)
 								end
-								tile.tileCount = tile.tileCount + 1
 								tiles[key] = holdTile
-								tiles[tile.tileCount] = holdTile
 								debug.log("[TILE] Added tile '"..key.."' from directory '"..dir.."' with the keys '"..key.."' and '"..tile.tileCount.."'")
 							else
 								debug.log("[TILE] Tile with key '"..key.."' in directory '"..dir.."' does not have correct variables")
@@ -75,7 +97,7 @@ function tile.getTiles(dir,isrepeat,tiles)
 				tile.getTiles(dir.."/"..item, true, tiles)
 			end
 		end
-		if not isrepeat then print(""); tile.tiles = tiles end
+		if not isrepeat then print(""); tile.unsortedTiles = tiles end
 	else
 		debug.log("[ERROR] Incorrect call to function 'tile.getTiles(dir,isrepeat,tiles)'")
 	end
