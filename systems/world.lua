@@ -84,7 +84,7 @@ function world.genWorld(w,h)
 	for y=1, h do
 		map.tiles[y] = {}
 		for x=1, w do
-			map.tiles[y][x] = 1--math.random(1,tile.tileCount)
+			map.tiles[y][x] = math.random(1,tile.tileCount)
 		end
 	end
 	if world.checkMap(map) then
