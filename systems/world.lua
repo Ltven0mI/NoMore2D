@@ -9,7 +9,7 @@ world.map = {}
 function world.load()
 	world.genWorld(300,300)
 
-	world.rdShader = love.graphics.newShader [[
+	world.vignetteShader = love.graphics.newShader [[
 		vec4 effect ( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords){
 			return vec4(0.0,0.0,0.0,-Texel(texture, texture_coords).r+0.99);
 		}
@@ -49,7 +49,7 @@ function world.draw()
 			if pri == world.runPriority[2] then
 				ui.push()
 					ui.setMode("screen")
-					love.graphics.setShader(world.rdShader)
+					love.graphics.setShader(world.vignetteShader)
 						ui.draw(image.getImage("vignette"),0,0,main.width,main.height)
 					love.graphics.setShader()
 				ui.pop()
