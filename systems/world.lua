@@ -4,10 +4,14 @@ world.runPriority = {6,8}
 
 -- Variables --
 world.map = {}
+world.vignette = nil
 
 -- Callbacks --
 function world.load()
 	world.genWorld(300,300)
+
+	world.vignette = image.getImage("vignette")
+	world.vignette:setFilter("linear")
 
 	world.vignetteShader = love.graphics.newShader [[
 		vec4 effect ( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords){
@@ -60,20 +64,37 @@ end
 
 -- Functions --
 function world.loadMap(key)
-	local map = require("/assets/maps/"..key)
-	if world.checkMap(map) then
-		local w, h = map.size.w, map.size.h
-		for y=1, h do
-			for x=1, w do
-				if map.tiles[y] and map.tiles[y][x] then
-					local holdTile = map.tiles[y][x]
-					if type(holdTile) == "number" then
-						map.tiles[y][x] = tile.cloneTile(holdTile)
+	if key then
+		if type(key) == "string" then
+			local map = require("/assets/maps/"..key)
+			if world.checkMap(map) then
+				local w, h = map.size.w, map.size.h
+				for y=1, h do
+					for x=1, w do
+						if map.tiles[y] and map.tiles[y][x] then
+							local holdTile = map.tiles[y][x]
+							if type(holdTile) == "number" then
+								map.tiles[y][x] = tile.cloneTile(holdTile)
+							end
+						end
 					end
 				end
+				world.map = map
+			end
+		elseif type(key) == "table" then
+			local holdTile = map.tiles[y][x]
+			if type(holdTile) == "number" then
+				if holdTile ~= 0 then
+					map.tiles[y][x] = tile.cloneTile(holdTile)
+				else
+					map.tiles[y][x] = nil
+				end
+			elseif type(holdTile) == "table" then
+				map.tiles[y][x] = tile.cloneTile(holdTile)
 			end
 		end
-		world.map = map
+	else
+		debug.log("[ERROR] Incorrect call to function 'world.loadMap(key)'")
 	end
 end
 
@@ -84,7 +105,7 @@ function world.genWorld(w,h)
 	for y=1, h do
 		map.tiles[y] = {}
 		for x=1, w do
-			map.tiles[y][x] = math.random(3,tile.tileCount)
+			map.tiles[y][x] = math.random(0,tile.tileCount)
 		end
 	end
 	if world.checkMap(map) then
@@ -94,6 +115,12 @@ function world.genWorld(w,h)
 				if map.tiles[y] and map.tiles[y][x] then
 					local holdTile = map.tiles[y][x]
 					if type(holdTile) == "number" then
+						if holdTile ~= 0 then
+							map.tiles[y][x] = tile.cloneTile(holdTile)
+						else
+							map.tiles[y][x] = nil
+						end
+					elseif type(holdTile) == "table" then
 						map.tiles[y][x] = tile.cloneTile(holdTile)
 					end
 				end
