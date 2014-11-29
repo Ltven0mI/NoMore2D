@@ -193,24 +193,24 @@ function ui.dropButton(text,style,btn)
 		local menu = ui.curDropMenu
 		menu.count = menu.count + 1
 		if menu.open then
-			camera.push()
-				camera.setMode(ui.var.mode)
-				if not text then text = "" end
-				if not style then style = menu.style end
-				if not btn then btn = "l" end
+			local cm = camera.getMode()
+			camera.setMode(ui.var.mode)
+			if not text then text = "" end
+			if not style then style = menu.style end
+			if not btn then btn = "l" end
 
-				local x, y, w, h = menu.x+menu.w*0.05, menu.y+(menu.h+menu.h/10)*menu.count, menu.w*0.9, menu.h
-				local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
-				local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
-				local lw = ui.var.lineWidth
+			local x, y, w, h = menu.x+menu.w*0.05, menu.y+(menu.h+menu.h/10)*menu.count, menu.w*0.9, menu.h
+			local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
+			local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
+			local lw = ui.var.lineWidth
 
-				ui.updateColor("bg", md, mo)
-				if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
-				if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
-				if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
-				ui.updateColor("fg", md, mo)
-				love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
-			camera.pop()
+			ui.updateColor("bg", md, mo)
+			if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
+			if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
+			if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
+			ui.updateColor("fg", md, mo)
+			love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
+			camera.setMode(cm)
 			if mo and od then return true else return false end
 		end
 	else
@@ -221,25 +221,25 @@ end
 function ui.dropStart(x,y,w,h,act,text,style,btn)
 	if x and y and w and h and act ~= nil then
 		if not ui.curDropMenu then
-			camera.push()
-				camera.setMode(ui.var.mode)
-				if not btn then btn = "l" end
-				if not style then style = ui.var.style end
-				if not text then text = "" end
+			local cm = camera.getMode()
+			camera.setMode(ui.var.mode)
+			if not btn then btn = "l" end
+			if not style then style = ui.var.style end
+			if not text then text = "" end
 
-				local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
-				local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
-				local lw = ui.var.lineWidth
+			local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
+			local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
+			local lw = ui.var.lineWidth
 
-				if mo and od then act = not act end
+			if mo and od then act = not act end
 
-				ui.updateColor("bg", md, mo)
-				if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
-				if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
-				if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
-				ui.updateColor("fg", md, mo)
-				love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
-			camera.pop()
+			ui.updateColor("bg", md, mo)
+			if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
+			if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
+			if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
+			ui.updateColor("fg", md, mo)
+			love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
+			camera.setMode(cm)
 			ui.curDropMenu = {open=act,count=0,style=style,x=x,y=y,w=w,h=h}
 			return act
 		else
@@ -260,16 +260,15 @@ end
 
 function ui.draw(drawable,x,y,w,h,r)
 	if drawable and type(drawable) == "userdata" and x and y then
-		
-		camera.push()
-			camera.setMode(ui.var.mode)
-			local iw, ih = drawable:getWidth(), drawable:getHeight()
-			if not w then w = iw end
-			if not h then h = ih end
-			if not r then r = 0 end
-			ui.setCurrentColor({r=255,g=255,b=255,a=255})
-			love.graphics.draw(drawable, x+w/2, y+h/2, math.rad(r), w/iw, h/ih, iw/2, ih/2)
-		camera.pop()
+		local cm = camera.getMode()
+		camera.setMode(ui.var.mode)
+		local iw, ih = drawable:getWidth(), drawable:getHeight()
+		if not w then w = iw end
+		if not h then h = ih end
+		if not r then r = 0 end
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.draw(drawable, x+w/2, y+h/2, math.rad(r), w/iw, h/ih, iw/2, ih/2)
+		camera.setMode(cm)
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.draw(drawable,x,y,w,h,r)'")
 	end
@@ -277,17 +276,14 @@ end
 
 function ui.rectangle(x,y,w,h,style)
 	if x and y and w and h then
-		camera.push()
-			camera.setMode(ui.var.mode)
-			if not style then style = ui.var.style end
-
-			local lw = ui.var.lineWidth
-
-			if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
-			if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
-			if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
-			
-		camera.pop()
+		local cm = camera.getMode()
+		camera.setMode(ui.var.mode)
+		if not style then style = ui.var.style end
+		local lw = ui.var.lineWidth
+		if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
+		if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
+		if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
+		camera.setMode(cm)
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.rectangle(x,y,w,h,style)'")
 		return nil
@@ -296,26 +292,26 @@ end
 
 function ui.tickbox(x,y,w,h,act,style,btn)
 	if x and y and w and h and act ~= nil then
-		camera.push()
-			camera.setMode(ui.var.mode)
-			if not btn then btn = "l" end
-			if not style then style = ui.var.style end
-			local text
-			if act then text = "O" else text = "X" end
+		local cm = camera.getMode()
+		camera.setMode(ui.var.mode)
+		if not btn then btn = "l" end
+		if not style then style = ui.var.style end
+		local text
+		if act then text = "O" else text = "X" end
 
-			local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
-			local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
-			local lw = ui.var.lineWidth
+		local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
+		local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
+		local lw = ui.var.lineWidth
 
-			if mo and od then act = not act end
+		if mo and od then act = not act end
 
-			ui.updateColor("bg", md, mo)
-			if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
-			if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
-			if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
-			ui.updateColor("fg", md, mo)
-			love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
-		camera.pop()
+		ui.updateColor("bg", md, mo)
+		if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
+		if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
+		if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
+		ui.updateColor("fg", md, mo)
+		love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
+		camera.setMode(cm)
 		return act
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.tickbox(x,y,w,h,act,style,btn)'")
@@ -325,21 +321,18 @@ end
 
 function ui.imageButton(img,x,y,w,h,r,btn)
 	if x and y and w and h and img and type(img) == "userdata" then
-		camera.push()
-			camera.setMode(ui.var.mode)
-			local iw, ih = img:getWidth(), img:getHeight()
-			if not w then w = iw end
-			if not h then h = ih end
-			if not r then r = 0 end
-			if not btn then btn = "l" end
-
-			local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
-
-			ui.updateColor("bg", md, mo)
-			love.graphics.draw(img, x+w/2, y+h/2, math.rad(r), w/iw, h/ih, iw/2, ih/2)
-
-			if mo and od then return true else return false end
-		camera.pop()
+		local cm = camera.getMode()
+		camera.setMode(ui.var.mode)
+		local iw, ih = img:getWidth(), img:getHeight()
+		if not w then w = iw end
+		if not h then h = ih end
+		if not r then r = 0 end
+		if not btn then btn = "l" end
+		local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
+		ui.updateColor("bg", md, mo)
+		love.graphics.draw(img, x+w/2, y+h/2, math.rad(r), w/iw, h/ih, iw/2, ih/2)
+		camera.setMode(cm)
+		if mo and od then return true else return false end
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.imageButton(img,x,y,w,h,r,btn)'")
 	end
@@ -347,23 +340,21 @@ end
 
 function ui.button(x,y,w,h,text,style,btn)
 	if x and y and w and h then
-		camera.push()
-			camera.setMode(ui.var.mode)
-			if not btn then btn = "l" end
-			if not style then style = ui.var.style end
-			if not text then text = "" end
-
-			local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
-			local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
-			local lw = ui.var.lineWidth
-
-			ui.updateColor("bg", md, mo)
-			if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
-			if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
-			if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
-			ui.updateColor("fg", md, mo)
-			love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
-		camera.pop()
+		local cm = camera.getMode()
+		camera.setMode(ui.var.mode)
+		if not btn then btn = "l" end
+		if not style then style = ui.var.style end
+		if not text then text = "" end
+		local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
+		local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
+		local lw = ui.var.lineWidth
+		ui.updateColor("bg", md, mo)
+		if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
+		if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
+		if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
+		ui.updateColor("fg", md, mo)
+		love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
+		camera.setMode(cm)
 		if mo and od then return true else return false end
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.button(x,y,w,h,text,style,btn)'")
@@ -373,28 +364,25 @@ end
 
 function ui.textbox(x,y,w,h,act,text,style,btn)
 	if x and y and w and h and act ~= nil and text then
-		camera.push()
-			camera.setMode(ui.var.mode)
-			if not btn then btn = "l" end
-			if not style then style = ui.var.style end
-
-			local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
-			local fw, fh = main.font:getWidth(text.."|"), main.font:getHeight(text.."|")
-			local lw = ui.var.lineWidth
-
-			if od and mo then act = true end
-			if od and not mo then act = false end
-			if act then text = text .. input.getCurrentText(); if input.onDown("backspace") then text = text:sub(1, #text-1) end end
-
-			ui.updateColor("bg", md, mo)
-			if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
-			if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
-			if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
-			ui.updateColor("fg", md, mo)
-			ui.beginGroup(x, y, w, h)
-				love.graphics.print(text.."|", x+w/2-fw/2, y+h/2-fh/2)
-			ui.endGroup()
-		camera.pop()
+		local cm = camera.getMode()
+		camera.setMode(ui.var.mode)
+		if not btn then btn = "l" end
+		if not style then style = ui.var.style end
+		local od, md, mo = love.mouse.onDown(btn), love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
+		local fw, fh = main.font:getWidth(text.."|"), main.font:getHeight(text.."|")
+		local lw = ui.var.lineWidth
+		if od and mo then act = true end
+		if od and not mo then act = false end
+		if act then text = text .. input.getCurrentText(); if input.onDown("backspace") then text = text:sub(1, #text-1) end end
+		ui.updateColor("bg", md, mo)
+		if style == "line" or style == "outline" then love.graphics.rectangle("line", x, y, w, h) end
+		if style == "outline" then love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, w-(lw*1.5)*2, h-(lw*1.5)*2) end
+		if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
+		ui.updateColor("fg", md, mo)
+		ui.beginGroup(x, y, w, h)
+			love.graphics.print(text.."|", x+w/2-fw/2, y+h/2-fh/2)
+		ui.endGroup()
+		camera.setMode(cm)
 		return act, text
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.textbox(x,y,w,h,act,text,style,btn)'")
@@ -404,45 +392,41 @@ end
 
 function ui.slider(x,y,w,h,p,pm,typ,text,style,btn)
 	if x and y and w and h and p and pm then
-		camera.push()
-			camera.setMode(ui.var.mode)
-			if not style then style = ui.var.style end
-			if not text then text = "" end
-			if not typ then if w > h then typ = "h" else typ = "v" end end
-			if not btn then btn = "l" end
-
-			local md, mo = love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
-			local mx, my = camera.getMouse()
-			local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
-			local lw = ui.var.lineWidth
-			local sX, sY = 1, 1
-
-			if mo and md then if typ == "h" then p = pm*((mx-(x+lw/2))/(w-lw)) else p = pm*((my-(y+lw/2))/(h-lw)) end end
-			p = math.clamp(p, 0, pm)
-
-			if typ == "v" then sY = p/pm elseif typ == "h" then sX = p/pm end
-
-			if style == "line" then 
-				ui.setCurrentColor(ui.var.bgIdle)
-				love.graphics.rectangle("line", x, y, w, h)
-				ui.setCurrentColor(ui.var.bgIdleAux)
-				love.graphics.rectangle("line", x+lw*1.5, y+lw*1.5, (w-(lw*1.5)*2)*sX, (h-(lw*1.5)*2)*sY)
-			end
-			if style == "outline" then
-				ui.setCurrentColor(ui.var.bgIdle)
-				love.graphics.rectangle("line", x, y, w, h)
-				ui.setCurrentColor(ui.var.bgIdleAux)
-				love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, (w-(lw*1.5)*2)*sX, (h-(lw*1.5)*2)*sY)
-			end
-			if style == "fill" then
-				ui.setCurrentColor(ui.var.bgIdle)
-				love.graphics.rectangle("line", x, y, w, h)
-				ui.setCurrentColor(ui.var.bgIdleAux)
-				love.graphics.rectangle("fill", x+lw/2, y+lw/2, (w-lw)*sX, (h-lw)*sY)
-			end
-			ui.setCurrentColor(ui.var.fgIdle)
-			love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
-		camera.pop()
+		local cm = camera.getMode()
+		camera.setMode(ui.var.mode)
+		if not style then style = ui.var.style end
+		if not text then text = "" end
+		if not typ then if w > h then typ = "h" else typ = "v" end end
+		if not btn then btn = "l" end
+		local md, mo = love.mouse.isDown(btn), ui.mouseOver(x, y, w, h)
+		local mx, my = camera.getMouse()
+		local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
+		local lw = ui.var.lineWidth
+		local sX, sY = 1, 1
+		if mo and md then if typ == "h" then p = pm*((mx-(x+lw/2))/(w-lw)) else p = pm*((my-(y+lw/2))/(h-lw)) end end
+		p = math.clamp(p, 0, pm)
+		if typ == "v" then sY = p/pm elseif typ == "h" then sX = p/pm end
+		if style == "line" then 
+			ui.setCurrentColor(ui.var.bgIdle)
+			love.graphics.rectangle("line", x, y, w, h)
+			ui.setCurrentColor(ui.var.bgIdleAux)
+			love.graphics.rectangle("line", x+lw*1.5, y+lw*1.5, (w-(lw*1.5)*2)*sX, (h-(lw*1.5)*2)*sY)
+		end
+		if style == "outline" then
+			ui.setCurrentColor(ui.var.bgIdle)
+			love.graphics.rectangle("line", x, y, w, h)
+			ui.setCurrentColor(ui.var.bgIdleAux)
+			love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, (w-(lw*1.5)*2)*sX, (h-(lw*1.5)*2)*sY)
+		end
+		if style == "fill" then
+			ui.setCurrentColor(ui.var.bgIdle)
+			love.graphics.rectangle("line", x, y, w, h)
+			ui.setCurrentColor(ui.var.bgIdleAux)
+			love.graphics.rectangle("fill", x+lw/2, y+lw/2, (w-lw)*sX, (h-lw)*sY)
+		end
+		ui.setCurrentColor(ui.var.fgIdle)
+		love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
+		camera.setMode(cm)
 		return p
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.slider(x,y,w,h,p,pm,typ,text,style)'")
@@ -452,41 +436,37 @@ end
 
 function ui.bar(x,y,w,h,p,pm,typ,text,style)
 	if x and y and w and h and p and pm then
-		camera.push()
-			camera.setMode(ui.var.mode)
-			if not style then style = ui.var.style end
-			if not text then text = "" end
-			if not typ then if w > h then typ = "h" else typ = "v" end end
-
-			local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
-			local lw = ui.var.lineWidth
-			local sX, sY = 1, 1
-
-			p = math.clamp(p, 0, pm)
-
-			if typ == "v" then sY = p/pm elseif typ == "h" then sX = p/pm end
-
-			if style == "line" then 
-				ui.setCurrentColor(ui.var.bgIdle)
-				love.graphics.rectangle("line", x, y, w, h)
-				ui.setCurrentColor(ui.var.bgIdleAux)
-				love.graphics.rectangle("line", x+lw*1.5, y+lw*1.5, (w-(lw*1.5)*2)*sX, (h-(lw*1.5)*2)*sY)
-			end
-			if style == "outline" then
-				ui.setCurrentColor(ui.var.bgIdle)
-				love.graphics.rectangle("line", x, y, w, h)
-				ui.setCurrentColor(ui.var.bgIdleAux)
-				love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, (w-(lw*1.5)*2)*sX, (h-(lw*1.5)*2)*sY)
-			end
-			if style == "fill" then
-				ui.setCurrentColor(ui.var.bgIdle)
-				love.graphics.rectangle("line", x, y, w, h)
-				ui.setCurrentColor(ui.var.bgIdleAux)
-				love.graphics.rectangle("fill", x+lw/2, y+lw/2, (w-lw)*sX, (h-lw)*sY)
-			end
-			ui.setCurrentColor(ui.var.fgIdle)
-			love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
-		camera.pop()
+		local cm = camera.getMode()
+		camera.setMode(ui.var.mode)
+		if not style then style = ui.var.style end
+		if not text then text = "" end
+		if not typ then if w > h then typ = "h" else typ = "v" end end
+		local fw, fh = main.font:getWidth(text), main.font:getHeight(text)
+		local lw = ui.var.lineWidth
+		local sX, sY = 1, 1
+		p = math.clamp(p, 0, pm)
+		if typ == "v" then sY = p/pm elseif typ == "h" then sX = p/pm end
+		if style == "line" then 
+			ui.setCurrentColor(ui.var.bgIdle)
+			love.graphics.rectangle("line", x, y, w, h)
+			ui.setCurrentColor(ui.var.bgIdleAux)
+			love.graphics.rectangle("line", x+lw*1.5, y+lw*1.5, (w-(lw*1.5)*2)*sX, (h-(lw*1.5)*2)*sY)
+		end
+		if style == "outline" then
+			ui.setCurrentColor(ui.var.bgIdle)
+			love.graphics.rectangle("line", x, y, w, h)
+			ui.setCurrentColor(ui.var.bgIdleAux)
+			love.graphics.rectangle("fill", x+lw*1.5, y+lw*1.5, (w-(lw*1.5)*2)*sX, (h-(lw*1.5)*2)*sY)
+		end
+		if style == "fill" then
+			ui.setCurrentColor(ui.var.bgIdle)
+			love.graphics.rectangle("line", x, y, w, h)
+			ui.setCurrentColor(ui.var.bgIdleAux)
+			love.graphics.rectangle("fill", x+lw/2, y+lw/2, (w-lw)*sX, (h-lw)*sY)
+		end
+		ui.setCurrentColor(ui.var.fgIdle)
+		love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
+		camera.setMode(cm)
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.bar(x,y,w,h,p,pm,typ,text,style)'")
 	end
