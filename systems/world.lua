@@ -65,33 +65,32 @@ end
 -- Functions --
 function world.loadMap(key)
 	if key then
+		local map = nil
 		if type(key) == "string" then
-			local map = require("/assets/maps/"..key)
-			if world.checkMap(map) then
-				local w, h = map.size.w, map.size.h
-				for y=1, h do
-					for x=1, w do
-						if map.tiles[y] and map.tiles[y][x] then
-							local holdTile = map.tiles[y][x]
-							if type(holdTile) == "number" then
+			map = require("/assets/maps/"..key)
+		elseif type(key) == "table" then
+			map = key
+		end
+
+		if world.checkMap(map) then
+			local w, h = map.size.w, map.size.h
+			for y=1, h do
+				for x=1, w do
+					if map.tiles[y] and map.tiles[y][x] then
+						local holdTile = map.tiles[y][x]
+						if type(holdTile) == "number" then
+							if holdTile ~= 0 then
 								map.tiles[y][x] = tile.cloneTile(holdTile)
+							else
+								map.tiles[y][x] = nil
 							end
+						elseif type(holdTile) == "table" then
+							map.tiles[y][x] = tile.cloneTile(holdTile)
 						end
 					end
 				end
-				world.map = map
 			end
-		elseif type(key) == "table" then
-			local holdTile = map.tiles[y][x]
-			if type(holdTile) == "number" then
-				if holdTile ~= 0 then
-					map.tiles[y][x] = tile.cloneTile(holdTile)
-				else
-					map.tiles[y][x] = nil
-				end
-			elseif type(holdTile) == "table" then
-				map.tiles[y][x] = tile.cloneTile(holdTile)
-			end
+			world.map = map
 		end
 	else
 		debug.log("[ERROR] Incorrect call to function 'world.loadMap(key)'")
@@ -108,26 +107,7 @@ function world.genWorld(w,h)
 			map.tiles[y][x] = math.random(0,tile.tileCount)
 		end
 	end
-	if world.checkMap(map) then
-		local w, h = map.size.w, map.size.h
-		for y=1, h do
-			for x=1, w do
-				if map.tiles[y] and map.tiles[y][x] then
-					local holdTile = map.tiles[y][x]
-					if type(holdTile) == "number" then
-						if holdTile ~= 0 then
-							map.tiles[y][x] = tile.cloneTile(holdTile)
-						else
-							map.tiles[y][x] = nil
-						end
-					elseif type(holdTile) == "table" then
-						map.tiles[y][x] = tile.cloneTile(holdTile)
-					end
-				end
-			end
-		end
-		world.map = map
-	end
+	world.loadMap(map)
 end
 
 function world.checkMap(map)
