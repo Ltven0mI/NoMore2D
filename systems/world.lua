@@ -32,10 +32,23 @@ function world.draw()
 
 			for y=sy, ey do
 				for x=sx, ex do
-					if map.tiles[y] and map.tiles[y][x] then
-						local holdTile = map.tiles[y][x]
+					-- Draw Floor Tiles
+					if map.tiles.floor[y] and map.tiles.floor[y][x] then
+						local holdTile = map.tiles.floor[y][x]
 						if holdTile.drawable then
-							if (not holdTile.isFloor and pri == world.runPriority[2]) or (holdTile.isFloor and pri == world.runPriority[1]) then
+							if pri == world.runPriority[1] then
+								ui.push()
+									ui.setMode("world")
+									ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
+								ui.pop()
+							end
+						end
+					end
+					-- Draw Wall Tiles
+					if map.tiles.wall[y] and map.tiles.wall[y][x] then
+						local holdTile = map.tiles.wall[y][x]
+						if holdTile.drawable then
+							if pri == world.runPriority[2] then
 								ui.push()
 									ui.setMode("world")
 									ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
@@ -76,17 +89,33 @@ function world.loadMap(key)
 			local w, h = map.size.w, map.size.h
 			for y=1, h do
 				for x=1, w do
-					if map.tiles[y] and map.tiles[y][x] then
-						local holdTile = map.tiles[y][x]
+					-- Load Floor Tiles
+					if map.tiles.floor[y] and map.tiles.floor[y][x] then
+						local holdTile = map.tiles.floor[y][x]
 						if type(holdTile) == "number" then
 							if holdTile ~= 0 then
-								map.tiles[y][x] = tile.cloneTile(holdTile)
+								map.tiles.floor[y][x] = tile.cloneTile(holdTile)
 							else
-								map.tiles[y][x] = nil
+								map.tiles.floor[y][x] = nil
 							end
 						elseif type(holdTile) == "table" then
-							map.tiles[y][x] = tile.cloneTile(holdTile)
+							map.tiles.floor[y][x] = tile.cloneTile(holdTile)
 						end
+						if map.tiles.floor[y][x] then map.tiles.floor[y][x].isFloor = true end
+					end
+					-- Load Wall Tiles
+					if map.tiles.wall[y] and map.tiles.wall[y][x] then
+						local holdTile = map.tiles.wall[y][x]
+						if type(holdTile) == "number" then
+							if holdTile ~= 0 then
+								map.tiles.wall[y][x] = tile.cloneTile(holdTile)
+							else
+								map.tiles.wall[y][x] = nil
+							end
+						elseif type(holdTile) == "table" then
+							map.tiles.wall[y][x] = tile.cloneTile(holdTile)
+						end
+						if map.tiles.wall[y][x] then map.tiles.wall[y][x].isFloor = false end
 					end
 				end
 			end
@@ -101,10 +130,14 @@ function world.genWorld(w,h)
 	local map = {}
 	map.size = {w=w,h=h}
 	map.tiles = {}
+	map.tiles.floor = {}
+	map.tiles.wall = {}
 	for y=1, h do
-		map.tiles[y] = {}
+		map.tiles.floor[y] = {}
+		map.tiles.wall[y] = {}
 		for x=1, w do
-			map.tiles[y][x] = math.random(0,tile.tileCount)
+			map.tiles.floor[y][x] = math.random(0,tile.tileCount)
+			map.tiles.wall[y][x] = math.random(0,tile.tileCount)
 		end
 	end
 	world.loadMap(map)
@@ -112,24 +145,29 @@ end
 
 function world.checkMap(map)
 	if map then
-		if map.size and map.size.w and map.size.h and map.tiles then return true else return false end
+		if map.size and map.size.w and map.size.h and map.tiles and map.tiles.floor and map.tiles.wall then return true else return false end
 	else
 		debug.log("[ERROR] Incorrect call to function 'world.checkMap(map)'")
 	end
 end
 
-function world.getTile(x,y)
+function world.getTile(x,y,f)
 	if x and y then
+		if f == nil then f = false end
 		local holdTile = nil
 		local ts = tile.tileSize
 		local map = world.map
 		x, y = math.ceil(x/ts), math.ceil(y/ts)
 		if map and x > 0 and x <= map.size.w and y > 0 and y <= map.size.h then
-			if map.tiles[y] and map.tiles[y][x] then holdTile = map.tiles[y][x] end
+			if f then
+				if map.tiles.floor[y] and map.tiles.floor[y][x] then holdTile = map.tiles.floor[y][x] end
+			else
+				if map.tiles.wall[y] and map.tiles.wall[y][x] then holdTile = map.tiles.wall[y][x] end
+			end
 		end
 		return holdTile
 	else
-		debug.log("[ERROR] Incorrect call to function 'world.getTile(x,y)'")
+		debug.log("[ERROR] Incorrect call to function 'world.getTile(x,y,f)'")
 	end
 end
 
