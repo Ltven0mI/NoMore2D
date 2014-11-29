@@ -18,15 +18,20 @@ end
 -- Functions --
 function tile.cloneTile(key)
 	if key then
-		if tile.tiles[key] then
-			local holdTile = tile.tiles[key]
-			local newTile = {}
-			for key, val in pairs(holdTile) do
-				newTile[key] = holdTile[key]
+		if type(key) == "number" or type(key) == "string" then
+			if tile.tiles[key] then
+				local holdTile = tile.tiles[key]
+				local newTile = cloneTable(holdTile, {"function"})
+				setmetatable(newTile, { __index = holdTile })
+				return newTile
+			else
+				debug.log("[WARNING] No tile with key '"..key.."'")
 			end
+		elseif type(key) == "table" then
+			local holdTile = key
+			local newTile = cloneTable(holdTile, {"function"})
+			setmetatable(newTile, { __index = holdTile })
 			return newTile
-		else
-			debug.log("[WARNING] No tile with key '"..key.."'")
 		end
 	else
 		debug.log("[ERROR] Incorrect call to function 'tile.cloneTile(key)'")
