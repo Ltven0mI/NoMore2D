@@ -15,6 +15,10 @@ function tile.load()
 	tile.addTiles()
 end
 
+function tile.resize(w,h)
+	tile.tileSize = math.floor(((w+h)/43.75)/2)*2
+end
+
 -- Functions --
 function tile.cloneTile(key)
 	if key then
