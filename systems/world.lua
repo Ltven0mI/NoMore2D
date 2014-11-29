@@ -50,7 +50,7 @@ function world.draw()
 				ui.push()
 					ui.setMode("screen")
 					love.graphics.setShader(world.rdShader)
-						ui.draw(image.getImage("rendisteffect"),0,0,main.width,main.height)
+						ui.draw(image.getImage("vignette"),0,0,main.width,main.height)
 					love.graphics.setShader()
 				ui.pop()
 			end
@@ -84,7 +84,7 @@ function world.genWorld(w,h)
 	for y=1, h do
 		map.tiles[y] = {}
 		for x=1, w do
-			map.tiles[y][x] = math.random(1,tile.tileCount)
+			map.tiles[y][x] = math.random(3,tile.tileCount)
 		end
 	end
 	if world.checkMap(map) then
