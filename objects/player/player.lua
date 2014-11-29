@@ -1,6 +1,7 @@
 player = {}
 
 -- Variables --
+player.tpos = {x=0,y=0}
 player.pos = {x=0,y=0}
 player.vel = {x=0,y=0}
 player.size = 32
@@ -42,11 +43,16 @@ function player:update(dt)
 	if self.rot > 247.5 and self.rot < 292.5 then self.facing = "left" end
 	if self.rot > 292.5 and self.rot < 337.5 then self.facing = "upleft" end
 
+	local ts = tile.tileSize
+
 	self.vel.x = self.vel.x*dt
 	self.vel.y = self.vel.y*dt
 
 	self.pos.x = self.pos.x + self.vel.x
 	self.pos.y = self.pos.y + self.vel.y
+
+	self.tpos.x = self.pos.x/ts
+	self.tpos.y = self.pos.y/ts
 
 	self:checkCollision()
 
@@ -64,14 +70,22 @@ end
 
 function player:keypressed(key)
 	if key == input.interact then
-		local tile = self:getTile(self.facing)
-		local inTile = self:getTile("")
-		if inTile and not inTile.isFloor then
-			if inTile.interact then inTile:interact() end
-		elseif tile and not tile.isFloor then
-			if tile.interact then tile:interact() end
+		local tile = self:getTile(self.facing, false)
+		local inTile = self:getTile("", false)
+		if inTile and inTile.interact then
+			inTile:interact()
+		elseif tile and tile.interact then
+			tile:interact()
 		end
 	end
+end
+
+function player:resize(w,h)
+	local ts = tile.tileSize
+	self.size = math.floor(((w+h)/58.3)/2)*2
+	self.speed = math.floor(((w+h)/7)/2)*2
+	self.pos.x = self.tpos.x*ts
+	self.pos.y = self.tpos.y*ts
 end
 
 -- Functions --
@@ -86,8 +100,8 @@ function player:checkCollision()
 
 			for y=sy, ey do
 				for x=sx, ex do
-					if map.tiles[y] and map.tiles[y][x] then
-						local holdTile = map.tiles[y][x]
+					if map.tiles.wall[y] and map.tiles.wall[y][x] then
+						local holdTile = map.tiles.wall[y][x]
 						if holdTile.collision then
 							local col = holdTile.collider
 							self.pos.x, self.pos.y, self.vel.x, self.vel.y = collision.boundingBox(self.pos.x, self.pos.y, self.size, self.size, self.vel.x, self.vel.y, (x-1)*ts+ts*col.x, (y-1)*ts+ts*col.y, ts*col.w, ts*col.h, 0, 0)
