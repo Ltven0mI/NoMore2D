@@ -7,6 +7,7 @@ camera.var = {}
 camera.var.pos = {x=0,y=0}
 camera.var.rot = 0
 camera.var.mode = "world"
+camera.var.modeOffset = {x=0, y=0}
 
 camera.pushpop = {}
 
@@ -58,6 +59,10 @@ function camera.getRot()
 	return camera.var.rot
 end
 
+function camera.getModeOffset()
+	return camera.var.modeOffset
+end
+
 function camera.setMode(mode)
 	if mode and type(mode) == "string" then
 		if mode == "world" or mode == "screen" then
@@ -104,7 +109,13 @@ end
 
 function camera.updateSettings()
 	love.graphics.origin()
-	if camera.var.mode == "world" then love.graphics.translate(-camera.var.pos.x, -camera.var.pos.y) else love.graphics.translate(0, 0) end
+	if camera.var.mode == "world" then
+		love.graphics.translate(-camera.var.pos.x, -camera.var.pos.y)
+		camera.var.modeOffset.x, camera.var.modeOffset.y = -camera.var.pos.x, -camera.var.pos.y
+	else
+		love.graphics.translate(0, 0)
+		camera.var.modeOffset.x, camera.var.modeOffset.y = 0, 0
+	end
 	love.graphics.rotate(math.rad(camera.var.rot))
 end
 
