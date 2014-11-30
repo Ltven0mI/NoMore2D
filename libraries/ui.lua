@@ -172,7 +172,8 @@ end
 
 function ui.beginGroup(x,y,w,h)
 	if x and y and w and h then
-		love.graphics.setScissor(x, y, w, h)
+		local mo = camera.getModeOffset()
+		love.graphics.setScissor(x+mo.x, y+mo.y, w, h)
 		ui.groupCount = ui.groupCount + 1
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.beginGroup(x,y,w,h)'")
@@ -259,15 +260,21 @@ function ui.dropEnd()
 end
 
 function ui.draw(drawable,x,y,w,h,r)
-	if drawable and type(drawable) == "userdata" and x and y then
+	if drawable and (type(drawable) == "userdata" or type(drawable) == "table" and drawable[1] and type(drawable[1]) == "userdata" and drawable[2] and type(drawable[2]) == "userdata") and x and y then
 		local cm = camera.getMode()
 		camera.setMode(ui.var.mode)
+		local quad = nil
+		if type(drawable) == "table" then quad = drawable[2]; drawable = drawable[1] end
 		local iw, ih = drawable:getWidth(), drawable:getHeight()
 		if not w then w = iw end
 		if not h then h = ih end
 		if not r then r = 0 end
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(drawable, x+w/2, y+h/2, math.rad(r), w/iw, h/ih, iw/2, ih/2)
+		if quad == nil then
+			love.graphics.draw(drawable, x+w/2, y+h/2, math.rad(r), w/iw, h/ih, iw/2, ih/2)
+		else
+			love.graphics.draw(drawable, quad, x+w/2, y+h/2, math.rad(r), w/iw, h/ih, iw/2, ih/2)
+		end
 		camera.setMode(cm)
 	else
 		debug.log("[ERROR] Incorrect call to function 'ui.draw(drawable,x,y,w,h,r)'")
