@@ -48,26 +48,49 @@ function world.update(dt)
 							local time = 1/holdTile.speed
 							local tx, ty
 							if holdTile.lastU then dtt = holdLast - holdTile.lastU else dtt = 0 end
+							if holdTile.lastPlayback == nil then holdTile.lastPlayback = pb end
 							if pb ~= "stop" then
-								if ct > (segX*segY)*time then
-									if pb == "play" or pb == "reverseplay" then
-										holdTile.playback = "stop"
+								if holdTile.lastPlayback ~= pb then
+									if pb == "start" then ct = 0 end
+									if pb == "reversestart" then ct = (segX*segY-1)*time end
+								end
+								if pb == "reverseplay" or pb == "reversestart" or pb == "reverseloop" then
+									if ct < 0 then
+										if pb == "reverseplay" or pb == "reversestart" then
+											holdTile.playback = "stop"
+											ct = 0
+										end
+										while ct < 0 do
+											local sub = (segX*segY)*time
+											ct = ct + sub; holdTile.curTime = holdTile.curTime + sub
+										end
 									end
-									while ct > (segX*segY)*time do
-										local sub = (segX*segY)*time
-										ct = ct - sub; holdTile.curTime = holdTile.curTime - sub
+								else
+									if ct > (segX*segY)*time then
+										if pb == "play" or pb == "start" then
+											holdTile.playback = "stop"
+											ct = (segX*segY-1)*time
+										end
+										while ct > (segX*segY)*time do
+											local sub = (segX*segY)*time
+											ct = ct - sub; holdTile.curTime = holdTile.curTime - sub
+										end
 									end
 								end
 								local hct = ct
-								if pb == "reverseplay" or pb == "reverseloop" then hct = -hct+(segX*segY)*time end
 								ty = math.ceil((math.floor(hct/time)+1)/segX)
 								tx = (math.floor(hct/time)+1)-((ty-1)*segX)
 								holdTile.anim = {tx=tx,ty=ty}
 
-								holdTile.curTime = ct + dtt
-								holdTile.lastU = holdLast
+								if pb == "reverseplay" or pb == "reverseloop" then
+									holdTile.curTime = ct - dtt
+								else
+									holdTile.curTime = ct + dtt
+								end
 							end
 						end
+						holdTile.lastU = holdLast
+						holdTile.lastPlayback = holdTile.playback
 					end
 					-- Update Wall Tiles
 					if map.tiles.wall[y] and map.tiles.wall[y][x] then
@@ -112,7 +135,6 @@ function world.update(dt)
 									end
 								end
 								local hct = ct
-								--if pb == "reverseplay" or pb == "reverseloop" then hct = -hct+(segX*segY)*time end
 								ty = math.ceil((math.floor(hct/time)+1)/segX)
 								tx = (math.floor(hct/time)+1)-((ty-1)*segX)
 								holdTile.anim = {tx=tx,ty=ty}
