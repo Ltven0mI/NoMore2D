@@ -4,7 +4,7 @@ door_wood.imageKey = "door_wood"
 door_wood.collision = true
 door_wood.collider = {x=0,y=0,w=1,h=0.2}
 
-door_wood.segments = {x=1,y=3}
+door_wood.tilesheet = {x=1,y=3}
 door_wood.playback = "reverseplay"
 door_wood.speed = 10
 
