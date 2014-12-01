@@ -11,7 +11,7 @@ function collision.boundingBox(x1,y1,w1,h1,vx1,vy1,x2,y2,w2,h2)
 		u1, d1, l1, r1 = hy, hy+h1, hx, hx+w1
 
 		if vy1 < 0 then
-			if u1>u2 and u1<d2 and d1>d2 then --Colliding on the top
+			if (d1>u2 and d1<=d2 and u1<u2) or (u1<d2 and u1>=u2 and d1>d2) or (u1<u2 and d1>d2) or (u1>=u2 and u1<d2 and d1<=d2 and d1>u2) then --Colliding on the top
 				if (r1>l2 and r1<=r2 and l1<l2) or (l1<r2 and l1>=l2 and r1>r2) or (l1<l2 and r1>r2) or (l1>=l2 and l1<r2 and r1<=r2 and r1>l2) then --Checks if there is any collision on the y plane
 					vy1 = 0
 					hy = y2+h2
@@ -20,7 +20,7 @@ function collision.boundingBox(x1,y1,w1,h1,vx1,vy1,x2,y2,w2,h2)
 			end
 		end
 		if vy1 > 0 then
-			if d1>u2 and d1<d2 and u1<u2 then --Colliding on the bottom
+			if (d1>u2 and d1<=d2 and u1<u2) or (u1<d2 and u1>=u2 and d1>d2) or (u1<u2 and d1>d2) or (u1>=u2 and u1<d2 and d1<=d2 and d1>u2) then --Colliding on the bottom
 				if (r1>l2 and r1<=r2 and l1<l2) or (l1<r2 and l1>=l2 and r1>r2) or (l1<l2 and r1>r2) or (l1>=l2 and l1<r2 and r1<=r2 and r1>l2) then --Checks if there is any collision on the y plane
 					vy1 = 0
 					hy = y2-h1
@@ -34,7 +34,7 @@ function collision.boundingBox(x1,y1,w1,h1,vx1,vy1,x2,y2,w2,h2)
 		u1, d1, l1, r1 = hy, hy+h1, hx, hx+w1
 
 		if vx1 < 0 then
-			if l1>l2 and l1<r2 and r1>r2 then --Colliding on the left
+			if (r1>l2 and r1<=r2 and l1<l2) or (l1<r2 and l1>=l2 and r1>r2) or (l1<l2 and r1>r2) or (l1>=l2 and l1<r2 and r1<=r2 and r1>l2) then --Colliding on the left
 				if (d1>u2 and d1<=d2 and u1<u2) or (u1<d2 and u1>=u2 and d1>d2) or (u1<u2 and d1>d2) or (u1>=u2 and u1<d2 and d1<=d2 and d1>u2) then --Checks if there is any collision on the x plane
 					vx1 = 0
 					hx = x2+w2
@@ -43,7 +43,7 @@ function collision.boundingBox(x1,y1,w1,h1,vx1,vy1,x2,y2,w2,h2)
 			end
 		end
 		if vx1 > 0 then
-			if r1>l2 and r1<r2 and l1<l2 then --Colliding on the right
+			if (r1>l2 and r1<=r2 and l1<l2) or (l1<r2 and l1>=l2 and r1>r2) or (l1<l2 and r1>r2) or (l1>=l2 and l1<r2 and r1<=r2 and r1>l2) then --Colliding on the right
 				if (d1>u2 and d1<=d2 and u1<u2) or (u1<d2 and u1>=u2 and d1>d2) or (u1<u2 and d1>d2) or (u1>=u2 and u1<d2 and d1<=d2 and d1>u2) then --Checks if there is any collision on the x plane
 					vx1 = 0
 					hx = x2-w1
