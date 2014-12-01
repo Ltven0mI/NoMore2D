@@ -82,8 +82,8 @@ end
 
 function player:resize(w,h)
 	local ts = tile.tileSize
-	self.size = math.floor(((w+h)/58.3)/2)*2
-	self.speed = math.floor(((w+h)/7)/2)*2
+	self.size = math.floor((w+h)/58.3)
+	self.speed = math.floor((w+h)/7)
 	self.pos.x = self.tpos.x*ts
 	self.pos.y = self.tpos.y*ts
 end
