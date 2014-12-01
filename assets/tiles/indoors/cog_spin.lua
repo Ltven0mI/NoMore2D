@@ -2,7 +2,7 @@ cog_spin = {}
 cog_spin.name = "cog_spin"
 cog_spin.imageKey = "cog_spin"
 
-cog_spin.tileSheet = {x=1,y=4}
+cog_spin.tileset = {x=1,y=4}
 cog_spin.speed = 10
 cog_spin.playback = "loop"
 cog_spin.collision = true

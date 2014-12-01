@@ -66,23 +66,23 @@ function tile.addTile(key)
 	end
 end
 
-function tile.getTileSheet(t)
+function tile.getTileset(t)
 	if t then
-		local sheet = t.tileSheet
-		if sheet and type(sheet) == "table" and sheet.x and sheet.y and (sheet.x > 1 or sheet.y > 1) then
+		local set = t.tileset
+		if set and type(set) == "table" and set.x and set.y and (set.x > 1 or set.y > 1) then
 			local img = image.getImage(t.imageKey)
 			local iw, ih = img:getWidth(), img:getHeight()
-			local pw, ph = math.floor(iw/sheet.x), math.floor(ih/sheet.y)
-			sheet.tiles = {}
-			for y=1, sheet.y do
-				sheet.tiles[y] = {}
-				for x=1, sheet.x do
-					sheet.tiles[y][x] = love.graphics.newQuad(pw*(x-1), ph*(y-1), pw, ph, iw, ih)
+			local pw, ph = math.floor(iw/set.x), math.floor(ih/set.y)
+			set.tiles = {}
+			for y=1, set.y do
+				set.tiles[y] = {}
+				for x=1, set.x do
+					set.tiles[y][x] = love.graphics.newQuad(pw*(x-1), ph*(y-1), pw, ph, iw, ih)
 				end
 			end
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'tile.getTileSheet(t)'")
+		debug.log("[ERROR] Incorrect call to function 'tile.getTileset(t)'")
 	end
 end
 
@@ -115,7 +115,7 @@ function tile.getTiles(dir,isrepeat,tiles)
 									col.w = math.clamp(col.w, 0.1, 1-col.x)
 									col.h = math.clamp(col.h, 0.1, 1-col.y)
 								end
-								tile.getTileSheet(holdTile)
+								tile.getTileset(holdTile)
 								tiles[key] = holdTile
 								debug.log("[TILE] Added tile '"..key.."' from directory '"..dir.."' with the keys '"..key.."' and '"..tile.tileCount.."'")
 							else
