@@ -43,8 +43,8 @@ function tile.cloneTile(key)
 end
 
 function tile.addTiles()
-	tile.addTile("grass_flat")
-	tile.addTile("dirt_flat")
+	tile.addTile("grass_01")
+	tile.addTile("dirt_01")
 	tile.addTile("check_bw")
 	tile.addTile("tile_flat_w")
 	tile.addTile("door_wood")
@@ -63,6 +63,26 @@ function tile.addTile(key)
 		end
 	else
 		debug.log("[ERROR] Incorrect call to function 'tile.addTile(key)'")
+	end
+end
+
+function tile.getTileSheet(t)
+	if t then
+		local sheet = t.tileSheet
+		if sheet and type(sheet) == "table" and sheet.x and sheet.y and (sheet.x > 1 or sheet.y > 1) then
+			local img = image.getImage(t.imageKey)
+			local iw, ih = img:getWidth(), img:getHeight()
+			local pw, ph = math.floor(iw/sheet.x), math.floor(ih/sheet.y)
+			sheet.tiles = {}
+			for y=1, sheet.y do
+				sheet.tiles[y] = {}
+				for x=1, sheet.x do
+					sheet.tiles[y][x] = love.graphics.newQuad(pw*(x-1), ph*(y-1), pw, ph, iw, ih)
+				end
+			end
+		end
+	else
+		debug.log("[ERROR] Incorrect call to function 'tile.getTileSheet(t)'")
 	end
 end
 
@@ -95,6 +115,7 @@ function tile.getTiles(dir,isrepeat,tiles)
 									col.w = math.clamp(col.w, 0.1, 1-col.x)
 									col.h = math.clamp(col.h, 0.1, 1-col.y)
 								end
+								tile.getTileSheet(holdTile)
 								tiles[key] = holdTile
 								debug.log("[TILE] Added tile '"..key.."' from directory '"..dir.."' with the keys '"..key.."' and '"..tile.tileCount.."'")
 							else
