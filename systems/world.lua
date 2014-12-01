@@ -35,119 +35,64 @@ function world.update(dt)
 
 			for y=sy, ey do
 				for x=sx, ex do
-					-- Update Floor Tiles
-					if map.tiles.floor[y] and map.tiles.floor[y][x] then
-						local holdTile = map.tiles.floor[y][x]
-						local ct = holdTile.curTime or 0
-						local dtt
-
-						-- Animating
-						if holdTile.segments and holdTile.segments.x and holdTile.segments.y and (holdTile.segments.x > 1 or holdTile.segments.y > 1) then
-							local segX, segY = holdTile.segments.x, holdTile.segments.y
-							local pb = holdTile.playback or "loop"
-							local time = 1/holdTile.speed
-							local tx, ty
-							if holdTile.lastU then dtt = holdLast - holdTile.lastU else dtt = 0 end
-							if holdTile.lastPlayback == nil then holdTile.lastPlayback = pb end
-							if pb ~= "stop" then
-								if holdTile.lastPlayback ~= pb then
-									if pb == "start" then ct = 0 end
-									if pb == "reversestart" then ct = (segX*segY-1)*time end
-								end
-								if pb == "reverseplay" or pb == "reversestart" or pb == "reverseloop" then
-									if ct < 0 then
-										if pb == "reverseplay" or pb == "reversestart" then
-											holdTile.playback = "stop"
-											ct = 0
+					-- Update Tiles
+					local holdTile
+					for i=1, 2 do
+						if i == 1 then if map.tiles.floor[y] and map.tiles.floor[y][x] then holdTile = map.tiles.floor[y][x] end end
+						if i == 2 then if map.tiles.wall[y] and map.tiles.wall[y][x] then holdTile = map.tiles.wall[y][x] end end
+						if holdTile then
+							local ct = holdTile.curTime or 0
+							local dtt
+							if holdTile.segments and holdTile.segments.x and holdTile.segments.y and (holdTile.segments.x > 1 or holdTile.segments.y > 1) then
+								local segX, segY = holdTile.segments.x, holdTile.segments.y
+								local pb = holdTile.playback or "loop"
+								local time = 1/holdTile.speed
+								local tx, ty
+								if holdTile.lastU then dtt = holdLast - holdTile.lastU else dtt = 0 end
+								if holdTile.lastPlayback == nil then holdTile.lastPlayback = pb end
+								if pb ~= "stop" then
+									if holdTile.lastPlayback ~= pb then
+										if pb == "start" then ct = 0 end
+										if pb == "reversestart" then ct = (segX*segY-1)*time end
+									end
+									if pb == "reverseplay" or pb == "reversestart" or pb == "reverseloop" then
+										if ct < 0 then
+											if pb == "reverseplay" or pb == "reversestart" then
+												holdTile.playback = "stop"
+												ct = 0
+											end
+											while ct < 0 do
+												local sub = (segX*segY)*time
+												ct = ct + sub; holdTile.curTime = holdTile.curTime + sub
+											end
 										end
-										while ct < 0 do
-											local sub = (segX*segY)*time
-											ct = ct + sub; holdTile.curTime = holdTile.curTime + sub
+									else
+										if ct > (segX*segY)*time then
+											if pb == "play" or pb == "start" then
+												holdTile.playback = "stop"
+												ct = (segX*segY-1)*time
+											end
+											while ct > (segX*segY)*time do
+												local sub = (segX*segY)*time
+												ct = ct - sub; holdTile.curTime = holdTile.curTime - sub
+											end
 										end
 									end
-								else
-									if ct > (segX*segY)*time then
-										if pb == "play" or pb == "start" then
-											holdTile.playback = "stop"
-											ct = (segX*segY-1)*time
-										end
-										while ct > (segX*segY)*time do
-											local sub = (segX*segY)*time
-											ct = ct - sub; holdTile.curTime = holdTile.curTime - sub
-										end
-									end
-								end
-								local hct = ct
-								ty = math.ceil((math.floor(hct/time)+1)/segX)
-								tx = (math.floor(hct/time)+1)-((ty-1)*segX)
-								holdTile.anim = {tx=tx,ty=ty}
+									local hct = ct
+									ty = math.ceil((math.floor(hct/time)+1)/segX)
+									tx = (math.floor(hct/time)+1)-((ty-1)*segX)
+									holdTile.anim = {tx=tx,ty=ty}
 
-								if pb == "reverseplay" or pb == "reverseloop" then
-									holdTile.curTime = ct - dtt
-								else
-									holdTile.curTime = ct + dtt
+									if pb == "reverseplay" or pb == "reverseloop" then
+										holdTile.curTime = ct - dtt
+									else
+										holdTile.curTime = ct + dtt
+									end
 								end
 							end
+							holdTile.lastU = holdLast
+							holdTile.lastPlayback = holdTile.playback
 						end
-						holdTile.lastU = holdLast
-						holdTile.lastPlayback = holdTile.playback
-					end
-					-- Update Wall Tiles
-					if map.tiles.wall[y] and map.tiles.wall[y][x] then
-						local holdTile = map.tiles.wall[y][x]
-						local ct = holdTile.curTime or 0
-						local dtt
-
-						-- Animating
-						if holdTile.segments and holdTile.segments.x and holdTile.segments.y and (holdTile.segments.x > 1 or holdTile.segments.y > 1) then
-							local segX, segY = holdTile.segments.x, holdTile.segments.y
-							local pb = holdTile.playback or "loop"
-							local time = 1/holdTile.speed
-							local tx, ty
-							if holdTile.lastU then dtt = holdLast - holdTile.lastU else dtt = 0 end
-							if holdTile.lastPlayback == nil then holdTile.lastPlayback = pb end
-							if pb ~= "stop" then
-								if holdTile.lastPlayback ~= pb then
-									if pb == "start" then ct = 0 end
-									if pb == "reversestart" then ct = (segX*segY-1)*time end
-								end
-								if pb == "reverseplay" or pb == "reversestart" or pb == "reverseloop" then
-									if ct < 0 then
-										if pb == "reverseplay" or pb == "reversestart" then
-											holdTile.playback = "stop"
-											ct = 0
-										end
-										while ct < 0 do
-											local sub = (segX*segY)*time
-											ct = ct + sub; holdTile.curTime = holdTile.curTime + sub
-										end
-									end
-								else
-									if ct > (segX*segY)*time then
-										if pb == "play" or pb == "start" then
-											holdTile.playback = "stop"
-											ct = (segX*segY-1)*time
-										end
-										while ct > (segX*segY)*time do
-											local sub = (segX*segY)*time
-											ct = ct - sub; holdTile.curTime = holdTile.curTime - sub
-										end
-									end
-								end
-								local hct = ct
-								ty = math.ceil((math.floor(hct/time)+1)/segX)
-								tx = (math.floor(hct/time)+1)-((ty-1)*segX)
-								holdTile.anim = {tx=tx,ty=ty}
-
-								if pb == "reverseplay" or pb == "reverseloop" then
-									holdTile.curTime = ct - dtt
-								else
-									holdTile.curTime = ct + dtt
-								end
-							end
-						end
-						holdTile.lastU = holdLast
-						holdTile.lastPlayback = holdTile.playback
 					end
 				end
 			end
