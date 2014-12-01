@@ -48,6 +48,7 @@ function tile.addTiles()
 	tile.addTile("check_bw")
 	tile.addTile("tile_flat_w")
 	tile.addTile("door_wood")
+	tile.addTile("cog_spin")
 end
 
 function tile.addTile(key)
