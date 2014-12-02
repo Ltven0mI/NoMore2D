@@ -41,7 +41,8 @@ function world.update(dt)
 						if i == 1 then if map.tiles.floor[y] and map.tiles.floor[y][x] then holdTile = map.tiles.floor[y][x] end end
 						if i == 2 then if map.tiles.wall[y] and map.tiles.wall[y][x] then holdTile = map.tiles.wall[y][x] end end
 						if holdTile then
-							local ct = holdTile.curTime or 0
+							if holdTile.ignore == nil then holdTile.ignore = {} end
+							local ct = holdTile.ignore.curTime or 0
 							local dtt
 							local tileset = holdTile.tileset
 							if tileset and tileset.x and tileset.y and (tileset.x > 1 or tileset.y > 1) and holdTile.speed and holdTile.playback then
@@ -49,10 +50,10 @@ function world.update(dt)
 								local pb = holdTile.playback or "loop"
 								local time = 1/holdTile.speed
 								local tx, ty
-								if holdTile.lastU then dtt = holdLast - holdTile.lastU else dtt = 0 end
-								if holdTile.lastPlayback == nil then holdTile.lastPlayback = pb end
+								if holdTile.ignore.lastU then dtt = holdLast - holdTile.ignore.lastU else dtt = 0 end
+								if holdTile.ignore.lastPlayback == nil then holdTile.ignore.lastPlayback = pb end
 								if pb ~= "stop" then
-									if holdTile.lastPlayback ~= pb then
+									if holdTile.ignore.lastPlayback ~= pb then
 										if pb == "start" then ct = 0 end
 										if pb == "reversestart" then ct = (setX*setY-1)*time end
 									end
@@ -64,7 +65,7 @@ function world.update(dt)
 											end
 											while ct < 0 do
 												local sub = (setX*setY)*time
-												ct = ct + sub; holdTile.curTime = holdTile.curTime + sub
+												ct = ct + sub; holdTile.ignore.curTime = holdTile.ignore.curTime + sub
 											end
 										end
 									else
@@ -75,7 +76,7 @@ function world.update(dt)
 											end
 											while ct > (setX*setY)*time do
 												local sub = (setX*setY)*time
-												ct = ct - sub; holdTile.curTime = holdTile.curTime - sub
+												ct = ct - sub; holdTile.ignore.curTime = holdTile.ignore.curTime - sub
 											end
 										end
 									end
@@ -84,14 +85,14 @@ function world.update(dt)
 									tx = (math.floor(hct/time)+1)-((ty-1)*setX)
 									tileset.tx, tileset.ty = tx, ty
 									if pb == "reverseplay" or pb == "reverseloop" then
-										holdTile.curTime = ct - dtt
+										holdTile.ignore.curTime = ct - dtt
 									else
-										holdTile.curTime = ct + dtt
+										holdTile.ignore.curTime = ct + dtt
 									end
 								end
 							end
-							holdTile.lastU = holdLast
-							holdTile.lastPlayback = holdTile.playback
+							holdTile.ignore.lastU = holdLast
+							holdTile.ignore.lastPlayback = holdTile.playback
 						end
 					end
 				end
@@ -188,6 +189,10 @@ function world.loadMap(key)
 						elseif type(holdTile) == "table" then
 							map.tiles.floor[y][x] = tile.cloneTile(holdTile)
 						end
+						if map.tiles.floor[y][x] and map.tiles.floor[y][x].tileset then 
+							local checkTile = tile.getTile(map.tiles.floor[y][x].name)
+							if checkTile and checkTile.tileset and checkTile.tileset.tiles then map.tiles.floor[y][x].tileset.tiles = checkTile.tileset.tiles end
+						end
 						if map.tiles.floor[y][x] then map.tiles.floor[y][x].isFloor = true end
 					end
 					-- Load Wall Tiles
@@ -201,6 +206,10 @@ function world.loadMap(key)
 							end
 						elseif type(holdTile) == "table" then
 							map.tiles.wall[y][x] = tile.cloneTile(holdTile)
+						end
+						if map.tiles.wall[y][x] and map.tiles.wall[y][x].tileset then 
+							local checkTile = tile.getTile(map.tiles.wall[y][x].name)
+							if checkTile and checkTile.tileset and checkTile.tileset.tiles then map.tiles.wall[y][x].tileset.tiles = checkTile.tileset.tiles end
 						end
 						if map.tiles.wall[y][x] then map.tiles.wall[y][x].isFloor = false end
 					end
@@ -216,9 +225,9 @@ end
 function world.saveMap(key,map)
 	if key then
 		if map == nil then map = world.map end
-		local str = tableToString(map)
+		local str = tableToString(map, {"ignore"})
 		if str then
-			love.filesystem.write(key..".lua", str)
+			love.filesystem.write("/assets/maps/"..key..".lua", "return "..str)
 		end
 	else
 		debug.log("[ERROR] Incorrect call to function 'world.saveMap(key,map)'")
