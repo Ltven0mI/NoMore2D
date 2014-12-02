@@ -33,6 +33,22 @@ function printTable(table,params,ind,it,txt)
 	return txt
 end
 
+function tableToString(orig)
+	local str = "{"
+	for key, val in pairs(orig) do
+		if str ~= "{" then str = str.."," end
+		if type(val) ~= "table" then
+			local varStr = tostring(val)
+			if type(val) == "string" then varStr = "'"..val.."'" end
+			str = str..key.."="..varStr
+		else
+			str = str..key.."="..tableToString(val)
+		end
+	end
+	str = str.."}"
+	return str
+end
+
 function cloneTable(tab,ignore,newTab)
 	if ignore == nil then ignore = {} end
 	if newTab == nil then newTab = {} end
