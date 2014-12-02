@@ -42,6 +42,20 @@ function tile.cloneTile(key)
 	end
 end
 
+function tile.getTile(key)
+	if key then
+		if type(key) == "number" or type(key) == "string" then
+			if tile.tiles[key] then
+				return tile.tiles[key]
+			else
+				debug.log("[WARNING] No tile with key '"..key.."'")
+			end
+		end
+	else
+		debug.log("[ERROR] Incorrect call to function 'tile.getTile(key)'")
+	end
+end
+
 function tile.addTiles()
 	tile.addTile("grass_01")
 	tile.addTile("dirt_01")
@@ -59,6 +73,7 @@ function tile.addTile(key)
 		if holdTile then
 			tile.tileCount = tile.tileCount + 1
 			holdTile.id = tile.tileCount
+			holdTile.ignore.tString = tableToString(holdTile, {"ignore"})
 			tile.tiles[tile.tileCount] = holdTile
 			tile.tiles[key] = holdTile
 			debug.log("[TILE] Added tile '"..key.."' with the keys '"..key.."' and '"..tile.tileCount.."'")
@@ -109,6 +124,7 @@ function tile.getTiles(dir,isrepeat,tiles)
 								if holdTile.imageKey == nil then holdTile.imageKey = "missing" end
 								if holdTile.collision == nil then holdTile.collision = false end
 								if holdTile.drawable == nil then holdTile.drawable = true end
+								if holdTile.ignore == nil then holdTile.ignore = {} end
 								if holdTile.collider == nil or (holdTile.collider and (not holdTile.collider.x or not holdTile.collider.y or not holdTile.collider.w or not holdTile.collider.h)) then
 									holdTile.collider = {x=0,y=0,w=1,h=1}
 								else
