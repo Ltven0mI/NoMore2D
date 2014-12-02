@@ -33,17 +33,24 @@ function printTable(table,params,ind,it,txt)
 	return txt
 end
 
-function tableToString(orig)
+function tableToString(orig,ignore)
 	local str = "{"
+	if ignore == nil then ignore = {} end
 	for key, val in pairs(orig) do
-		if type(key) == "number" then key = "" else key = key .. "=" end
-		if str ~= "{" then str = str.."," end
-		if type(val) ~= "table" then
-			local varStr = tostring(val)
-			if type(val) == "string" then varStr = "'"..val.."'" end
-			str = str..key..varStr
-		else
-			str = str..key..tableToString(val)
+		local doIgnore = false
+		for k, v in pairs(ignore) do
+			if v == key then doIgnore = true; break end
+		end
+		if not doIgnore then
+			if type(key) == "number" then key = "["..key.."]=" else key = key .. "=" end
+			if str ~= "{" then str = str.."," end
+			if type(val) ~= "table" then
+				local varStr = tostring(val)
+				if type(val) == "string" then varStr = "'"..val.."'" end
+				str = str..key..varStr
+			else
+				str = str..key..tableToString(val, ignore)
+			end
 		end
 	end
 	str = str.."}"
