@@ -49,6 +49,8 @@ function tile.addTiles()
 	tile.addTile("tile_flat_w")
 	tile.addTile("door_wood")
 	tile.addTile("cog_spin")
+	tile.addTile("grass_dirt_01")
+	debug.log("")
 end
 
 function tile.addTile(key)
@@ -56,8 +58,10 @@ function tile.addTile(key)
 		local holdTile = tile.unsortedTiles[key]
 		if holdTile then
 			tile.tileCount = tile.tileCount + 1
+			holdTile.id = tile.tileCount
 			tile.tiles[tile.tileCount] = holdTile
 			tile.tiles[key] = holdTile
+			debug.log("[TILE] Added tile '"..key.."' with the keys '"..key.."' and '"..tile.tileCount.."'")
 		else
 			debug.log("[WARNING] No existing tile with the key '"..key.."'")
 		end
@@ -105,7 +109,6 @@ function tile.getTiles(dir,isrepeat,tiles)
 								if holdTile.imageKey == nil then holdTile.imageKey = "missing" end
 								if holdTile.collision == nil then holdTile.collision = false end
 								if holdTile.drawable == nil then holdTile.drawable = true end
-								if holdTile.isFloor == nil then holdTile.isFloor = true end
 								if holdTile.collider == nil or (holdTile.collider and (not holdTile.collider.x or not holdTile.collider.y or not holdTile.collider.w or not holdTile.collider.h)) then
 									holdTile.collider = {x=0,y=0,w=1,h=1}
 								else
@@ -117,7 +120,7 @@ function tile.getTiles(dir,isrepeat,tiles)
 								end
 								tile.getTileset(holdTile)
 								tiles[key] = holdTile
-								debug.log("[TILE] Added tile '"..key.."' from directory '"..dir.."' with the keys '"..key.."' and '"..tile.tileCount.."'")
+								debug.log("[TILE] Added tile '"..key.."' from directory '"..dir.."' to unsorted list")
 							else
 								debug.log("[TILE] Tile with key '"..key.."' in directory '"..dir.."' does not have correct variables")
 							end
