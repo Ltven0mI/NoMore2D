@@ -138,7 +138,7 @@ function world.draw()
 								local drawQuad
 								local tileset = holdTile.tileset
 								if tileset and tileset.tiles and tileset.tiles and tileset.tiles[tileset.ty] and tileset.tiles[tileset.ty][tileset.tx] then drawQuad = tileset.tiles[tileset.ty][tileset.tx] end
-								if pri == world.runPriority[1] then
+								if pri == world.runPriority[2] then
 									if drawQuad then
 										ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
 									else
@@ -255,6 +255,35 @@ function world.getTile(x,y,f)
 		return holdTile
 	else
 		debug.log("[ERROR] Incorrect call to function 'world.getTile(x,y,f)'")
+	end
+end
+
+function world.setTile(x,y,key,f)
+	if x and y and key then
+		if f == nil then f = false end
+		if x > 0 and y > 0 and x <= world.map.size.w and y <= world.map.size.h then
+			local holdTile = tile.cloneTile(key)
+			if holdTile then
+				local map = world.map
+				if map then
+					if world.checkMap(map) and map.tiles then
+						if f then
+							if map.tiles.floor[y] then
+								map.tiles.floor[y][x] = holdTile
+							end
+						else
+							if map.tiles.wall[y] then
+								map.tiles.wall[y][x] = holdTile
+							end
+						end
+					end
+				end
+			end
+		else
+			debug.log("[WARNING] Arguments 'x' and 'y' in call to function 'world.setTile(x,y,key,f)' are outside of the map bounds")
+		end
+	else
+		debug.log("[ERROR] Incorrect call to function 'world.setTile(x,y,key,f)'")
 	end
 end
 
