@@ -10,6 +10,10 @@ player.rot = 0
 player.curRot = 0
 player.facing = ""
 
+player.editFloor = true
+player.editTile = 1
+player.editTileCords = {x=1,y=1}
+
 -- Callbacks --
 function player:update(dt)
 	self.vel.x, self.vel.y = 0, 0
@@ -59,6 +63,20 @@ function player:update(dt)
 	self.curRot = math.anglerp(self.curRot, self.rot, 0.1)
 
 	camera.centerPos(self.pos.x+self.size/2, self.pos.y+self.size/2)
+
+	local ts = tile.tileSize
+	local x, y = camera.getMouse()
+	local tx, ty = math.floor(x/ts)+1, math.floor(y/ts)+1
+	if love.mouse.isDown("l") then
+		local holdTile = world.setTile(tx, ty, self.editTile, self.editFloor)
+		if holdTile and holdTile.tileset then
+			holdTile.tileset.tx = self.editTileCords.x
+			holdTile.tileset.ty = self.editTileCords.y
+		end
+	end
+	if love.mouse.isDown("r") then
+		world.setTile(tx, ty, "", self.editFloor)
+	end
 end
 
 function player:draw()
@@ -77,6 +95,30 @@ function player:keypressed(key)
 		elseif tile and tile.interact then
 			tile:interact()
 		end
+	end
+	if key == "f" then
+		self.editFloor = not self.editFloor
+	end
+	if key == "=" then
+		self.editTile = self.editTile + 1
+	end
+	if key == "-" then
+		self.editTile = self.editTile - 1
+	end
+	if key == "up" then
+		self.editTileCords.y = self.editTileCords.y + 1
+	end
+	if key == "down" then
+		self.editTileCords.y = self.editTileCords.y - 1
+	end
+	if key == "left" then
+		self.editTileCords.x = self.editTileCords.x - 1
+	end
+	if key == "right" then
+		self.editTileCords.x = self.editTileCords.x + 1
+	end
+	if key == "b" then
+		world.saveMap("testsave")
 	end
 end
 

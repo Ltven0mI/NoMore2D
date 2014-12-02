@@ -9,7 +9,7 @@ world.lastUpdate = 0
 
 -- Callbacks --
 function world.load()
-	world.genWorld(300,300)
+	world.genWorld(10,10)
 	--world.loadMap("level_01")
 
 	world.vignette = image.getImage("vignette")
@@ -213,6 +213,18 @@ function world.loadMap(key)
 	end
 end
 
+function world.saveMap(key,map)
+	if key then
+		if map == nil then map = world.map end
+		local str = tableToString(map)
+		if str then
+			love.filesystem.write(key..".lua", str)
+		end
+	else
+		debug.log("[ERROR] Incorrect call to function 'world.saveMap(key,map)'")
+	end
+end
+
 function world.genWorld(w,h)
 	local map = {}
 	map.size = {w=w,h=h}
@@ -223,8 +235,8 @@ function world.genWorld(w,h)
 		map.tiles.floor[y] = {}
 		map.tiles.wall[y] = {}
 		for x=1, w do
-			map.tiles.floor[y][x] = math.random(1,2)
-			map.tiles.wall[y][x] = math.random(0,2)*tile.tileCount
+			map.tiles.floor[y][x] = 4
+			map.tiles.wall[y][x] = 0--math.random(0,2)*(tile.tileCount-1)
 		end
 	end
 	world.loadMap(map)
@@ -262,8 +274,9 @@ function world.setTile(x,y,key,f)
 	if x and y and key then
 		if f == nil then f = false end
 		if x > 0 and y > 0 and x <= world.map.size.w and y <= world.map.size.h then
-			local holdTile = tile.cloneTile(key)
-			if holdTile then
+			local holdTile = nil
+			if key ~= "" then holdTile = tile.cloneTile(key) end
+			if holdTile or key == "" then
 				local map = world.map
 				if map then
 					if world.checkMap(map) and map.tiles then
@@ -276,6 +289,7 @@ function world.setTile(x,y,key,f)
 								map.tiles.wall[y][x] = holdTile
 							end
 						end
+						return holdTile
 					end
 				end
 			end
