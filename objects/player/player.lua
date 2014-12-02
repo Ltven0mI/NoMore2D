@@ -106,10 +106,10 @@ function player:keypressed(key)
 		self.editTile = self.editTile - 1
 	end
 	if key == "up" then
-		self.editTileCords.y = self.editTileCords.y + 1
+		self.editTileCords.y = self.editTileCords.y - 1
 	end
 	if key == "down" then
-		self.editTileCords.y = self.editTileCords.y - 1
+		self.editTileCords.y = self.editTileCords.y + 1
 	end
 	if key == "left" then
 		self.editTileCords.x = self.editTileCords.x - 1
@@ -119,6 +119,9 @@ function player:keypressed(key)
 	end
 	if key == "b" then
 		world.saveMap("testsave")
+	end
+	if key == "n" then
+		world.loadMap("testsave")
 	end
 end
 
