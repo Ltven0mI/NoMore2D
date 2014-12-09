@@ -1,7 +1,7 @@
 -- System Settings --
 object = {}
 object.systemKey = "object"
-object.runPriority = 7
+object.runPriority = 16
 
 -- Variables --
 object.objects = {}
@@ -94,7 +94,7 @@ function object.keyreleased(key)
 end
 
 function object.load(arg)
-	object.getObjects("/objects")
+	object.getObjects("/assets/objects")
 
 	for uid, obj in pairs(object.createdObjects) do
 		if obj.load then obj:load(arg) end

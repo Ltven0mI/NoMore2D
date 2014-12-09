@@ -10,9 +10,11 @@ player.rot = 0
 player.curRot = 0
 player.facing = ""
 
-player.editFloor = true
+player.editLayer = "floor"
 player.editTile = 1
 player.editTileCords = {x=1,y=1}
+
+player.weapon = nil
 
 -- Callbacks --
 function player:update(dt)
@@ -62,21 +64,25 @@ function player:update(dt)
 
 	self.curRot = math.anglerp(self.curRot, self.rot, 0.1)
 
-	camera.centerPos(self.pos.x+self.size/2, self.pos.y+self.size/2)
+	camera.centerPos(math.round(self.pos.x+self.size/2), math.round(self.pos.y+self.size/2))
 
-	local ts = tile.tileSize
+	if love.mouse.isDown(input.fire) then
+		if self.weapon and self.weapon.attack then self.weapon:attack() end
+	end
+
+	--[[local ts = tile.tileSize
 	local x, y = camera.getMouse()
 	local tx, ty = math.floor(x/ts)+1, math.floor(y/ts)+1
 	if love.mouse.isDown("l") then
-		local holdTile = world.setTile(tx, ty, self.editTile, self.editFloor)
+		local holdTile = world.setTile(tx, ty, self.editTile, self.editLayer)
 		if holdTile and holdTile.tileset then
 			holdTile.tileset.tx = self.editTileCords.x
 			holdTile.tileset.ty = self.editTileCords.y
 		end
 	end
 	if love.mouse.isDown("r") then
-		world.setTile(tx, ty, "", self.editFloor)
-	end
+		world.setTile(tx, ty, "", self.editLayer)
+	end]]
 end
 
 function player:draw()
@@ -88,16 +94,26 @@ end
 
 function player:keypressed(key)
 	if key == input.interact then
-		local tile = self:getTile(self.facing, false)
-		local inTile = self:getTile("", false)
+		local tile = self:getTile(self.facing, "wall")
+		local inTile = self:getTile("", "wall")
 		if inTile and inTile.interact then
 			inTile:interact()
 		elseif tile and tile.interact then
 			tile:interact()
 		end
 	end
+	if key == "k" then
+		self.weapon = object.new("gun")
+		self.weapon.parent = self
+	end
 	if key == "f" then
-		self.editFloor = not self.editFloor
+		if self.editLayer == "floor" then
+			self.editLayer = "wall"
+		elseif self.editLayer == "wall" then
+			self.editLayer = "roof"
+		elseif self.editLayer == "roof" then
+			self.editLayer = "floor"
+		end
 	end
 	if key == "=" then
 		self.editTile = self.editTile + 1
@@ -125,14 +141,6 @@ function player:keypressed(key)
 	end
 end
 
-function player:resize(w,h)
-	local ts = tile.tileSize
-	self.size = math.floor((w+h)/58.3)
-	self.speed = math.floor((w+h)/7)
-	self.pos.x = self.tpos.x*ts
-	self.pos.y = self.tpos.y*ts
-end
-
 -- Functions --
 function player:checkCollision()
 	local map = world.map
@@ -158,24 +166,24 @@ function player:checkCollision()
 	end
 end
 
-function player:getTile(side)
-	if side then
+function player:getTile(side,layer)
+	if side and layer then
 		local holdTile = nil
 		local ts = tile.tileSize
 		if side == "up" then
-			holdTile = world.getTile(self.pos.x+self.size/2, self.pos.y+self.size/2-ts)
+			holdTile = world.getTile(self.pos.x+self.size/2, self.pos.y+self.size/2-ts, "wall")
 		elseif side == "down" then
-			holdTile = world.getTile(self.pos.x+self.size/2, self.pos.y+self.size/2+ts)
+			holdTile = world.getTile(self.pos.x+self.size/2, self.pos.y+self.size/2+ts, "wall")
 		elseif side == "left" then
-			holdTile = world.getTile(self.pos.x+self.size/2-ts, self.pos.y+self.size/2)
+			holdTile = world.getTile(self.pos.x+self.size/2-ts, self.pos.y+self.size/2, "wall")
 		elseif side == "right" then
-			holdTile = world.getTile(self.pos.x+self.size/2+ts, self.pos.y+self.size/2)
+			holdTile = world.getTile(self.pos.x+self.size/2+ts, self.pos.y+self.size/2, "wall")
 		elseif side == "" then
-			holdTile = world.getTile(self.pos.x+self.size/2, self.pos.y+self.size/2)
+			holdTile = world.getTile(self.pos.x+self.size/2, self.pos.y+self.size/2, "wall")
 		end
 		return holdTile
 	else
-		debug.log("[ERROR] Incorrect call to function 'player:getTile(side)'")
+		debug.log("[ERROR] Incorrect call to function 'player:getTile(side,layer)'")
 	end
 end
 
