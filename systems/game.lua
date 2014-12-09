@@ -1,6 +1,6 @@
 game = {}
 game.systemKey = "game"
-game.runPriority = 9
+game.runPriority = 18
 
 -- Variables --
 game.player = nil
