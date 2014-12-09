@@ -5,9 +5,11 @@ camera.runPriority = 3
 -- Variables --
 camera.var = {}
 camera.var.pos = {x=0,y=0}
+camera.var.scale = 1
 camera.var.rot = 0
 camera.var.mode = "world"
 camera.var.modeOffset = {x=0, y=0}
+camera.var.scaleOffset = {x=0,y=0}
 
 camera.pushpop = {}
 
@@ -18,10 +20,15 @@ camera.pushCount = 0
 function camera.load(args)
 	camera.window.w = main.w
 	camera.window.h = main.h
+	debug.log(main.width + main.height)
 end
 
 function camera.draw()
 	camera.updateSettings()
+end
+
+function camera.resize(w,h)
+	camera.var.scale = (main.width+main.height)/1750
 end
 
 -- Function --
@@ -36,8 +43,10 @@ end
 
 function camera.centerPos(x,y)
 	if x and y then
-		camera.var.pos.x = math.round(x-main.width/2)
-		camera.var.pos.y = math.round(y-main.height/2)
+		camera.var.pos.x = math.round(x-main.width/2/camera.var.scale)
+		camera.var.pos.y = math.round(y-main.height/2/camera.var.scale)
+		camera.var.scaleOffset.x = math.round((main.width/2/camera.var.scale)*(-camera.var.scale+1))
+		camera.var.scaleOffset.y = math.round((main.height/2/camera.var.scale)*(-camera.var.scale+1))
 	else
 		debug.log("[ERROR] Incorrect call to function 'camera.center(x,y)'")
 	end
@@ -82,7 +91,7 @@ end
 
 function camera.getMouse()
 	local mx, my = love.mouse.getPosition()
-	if camera.var.mode == "world" then return mx+camera.var.pos.x, my+camera.var.pos.y elseif camera.var.mode == "screen" then return mx, my end
+	if camera.var.mode == "world" then return mx+camera.var.pos.x+camera.var.scaleOffset.x, my+camera.var.pos.y+camera.var.scaleOffset.y elseif camera.var.mode == "screen" then return mx, my end
 end
 
 function camera.push()
@@ -110,6 +119,8 @@ end
 function camera.updateSettings()
 	love.graphics.origin()
 	if camera.var.mode == "world" then
+		local scale = camera.var.scale
+		love.graphics.scale(scale)
 		love.graphics.translate(-camera.var.pos.x, -camera.var.pos.y)
 		camera.var.modeOffset.x, camera.var.modeOffset.y = -camera.var.pos.x, -camera.var.pos.y
 	else
