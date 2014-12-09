@@ -33,6 +33,55 @@ function printTable(table,params,ind,it,txt)
 	return txt
 end
 
+function compareTables(tab1,tab2,ignore)
+	local same = true
+	if ignore == nil then ignore = {} end
+	for key, val in pairs(tab1) do
+		local doIgnore = false
+		for k, v in pairs(ignore) do
+			if v == key then doIgnore = true; break end
+		end
+		if not doIgnore then
+			if type(val) ~= "table" then
+				if not (tab2[key] ~= nil and tab2[key] == val) then
+					same = false
+					break
+				end
+			else
+				if tab2[key] then
+					if not compareTables(val, tab2[key], ignore) then same = false; break end
+				else
+					same = false
+					break
+				end
+			end
+		end
+	end
+
+	for key, val in pairs(tab2) do
+		local doIgnore = false
+		for k, v in pairs(ignore) do
+			if v == key then doIgnore = true; break end
+		end
+		if not doIgnore then
+			if type(val) ~= "table" then
+				if not (tab1[key] ~= nil and tab1[key] == val) then
+					same = false
+					break
+				end
+			else
+				if tab1[key] then
+					if not compareTables(val, tab1[key], ignore) then same = false; break end
+				else
+					same = false
+					break
+				end
+			end
+		end
+	end
+	return same
+end
+
 function tableToString(orig,ignore)
 	local str = "{"
 	if ignore == nil then ignore = {} end
