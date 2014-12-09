@@ -20,7 +20,6 @@ camera.pushCount = 0
 function camera.load(args)
 	camera.window.w = main.w
 	camera.window.h = main.h
-	debug.log(main.width + main.height)
 end
 
 function camera.draw()
