@@ -15,10 +15,6 @@ function tile.load()
 	tile.addTiles()
 end
 
-function tile.resize(w,h)
-	tile.tileSize = math.floor(((w+h)/43.75)/2)*2
-end
-
 -- Functions --
 function tile.cloneTile(key)
 	if key then
@@ -59,6 +55,7 @@ end
 function tile.addTiles()
 	tile.addTile("grass_01")
 	tile.addTile("dirt_01")
+	tile.addTile("sand_01")
 	tile.addTile("check_bw")
 	tile.addTile("tile_flat_w")
 	tile.addTile("door_wood")
@@ -92,11 +89,13 @@ function tile.getTileset(t)
 			local img = image.getImage(t.imageKey)
 			local iw, ih = img:getWidth(), img:getHeight()
 			local pw, ph = math.floor(iw/set.x), math.floor(ih/set.y)
-			set.tiles = {}
+			set.tx = 1
+			set.ty = 1
+			set.quads = {}
 			for y=1, set.y do
-				set.tiles[y] = {}
+				set.quads[y] = {}
 				for x=1, set.x do
-					set.tiles[y][x] = love.graphics.newQuad(pw*(x-1), ph*(y-1), pw, ph, iw, ih)
+					set.quads[y][x] = love.graphics.newQuad(pw*(x-1), ph*(y-1), pw, ph, iw, ih)
 				end
 			end
 		end
