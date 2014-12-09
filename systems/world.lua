@@ -1,6 +1,6 @@
 world = {}
 world.systemKey = "world"
-world.runPriority = {6,8}
+world.runPriority = {15,17}
 
 -- Variables --
 world.map = {}
@@ -37,9 +37,10 @@ function world.update(dt)
 				for x=sx, ex do
 					-- Update Tiles
 					local holdTile
-					for i=1, 2 do
+					for i=1, 3 do
 						if i == 1 then if map.tiles.floor[y] and map.tiles.floor[y][x] then holdTile = map.tiles.floor[y][x] end end
 						if i == 2 then if map.tiles.wall[y] and map.tiles.wall[y][x] then holdTile = map.tiles.wall[y][x] end end
+						if i == 3 then if map.tiles.roof[y] and map.tiles.roof[y][x] then holdTile = map.tiles.roof[y][x] end end
 						if holdTile then
 							if holdTile.ignore == nil then holdTile.ignore = {} end
 							local ct = holdTile.ignore.curTime or 0
@@ -122,7 +123,7 @@ function world.draw()
 							if holdTile.drawable then
 								local drawQuad
 								local tileset = holdTile.tileset
-								if tileset and tileset.tiles and tileset.tiles and tileset.tiles[tileset.ty] and tileset.tiles[tileset.ty][tileset.tx] then drawQuad = tileset.tiles[tileset.ty][tileset.tx] end
+								if tileset and tileset.quads and tileset.quads and tileset.quads[tileset.ty] and tileset.quads[tileset.ty][tileset.tx] then drawQuad = tileset.quads[tileset.ty][tileset.tx] end
 								if pri == world.runPriority[1] then
 									if drawQuad then
 										ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
@@ -138,7 +139,23 @@ function world.draw()
 							if holdTile.drawable then
 								local drawQuad
 								local tileset = holdTile.tileset
-								if tileset and tileset.tiles and tileset.tiles and tileset.tiles[tileset.ty] and tileset.tiles[tileset.ty][tileset.tx] then drawQuad = tileset.tiles[tileset.ty][tileset.tx] end
+								if tileset and tileset.quads and tileset.quads and tileset.quads[tileset.ty] and tileset.quads[tileset.ty][tileset.tx] then drawQuad = tileset.quads[tileset.ty][tileset.tx] end
+								if pri == world.runPriority[2] then
+									if drawQuad then
+										ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
+									else
+										ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
+									end
+								end
+							end
+						end
+						-- Draw Roof Tiles
+						if map.tiles.roof[y] and map.tiles.roof[y][x] then
+							local holdTile = map.tiles.roof[y][x]
+							if holdTile.drawable then
+								local drawQuad
+								local tileset = holdTile.tileset
+								if tileset and tileset.quads and tileset.quads and tileset.quads[tileset.ty] and tileset.quads[tileset.ty][tileset.tx] then drawQuad = tileset.quads[tileset.ty][tileset.tx] end
 								if pri == world.runPriority[2] then
 									if drawQuad then
 										ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
@@ -191,9 +208,8 @@ function world.loadMap(key)
 						end
 						if map.tiles.floor[y][x] and map.tiles.floor[y][x].tileset then 
 							local checkTile = tile.getTile(map.tiles.floor[y][x].name)
-							if checkTile and checkTile.tileset and checkTile.tileset.tiles then map.tiles.floor[y][x].tileset.tiles = checkTile.tileset.tiles end
+							if checkTile and checkTile.tileset and checkTile.tileset.quads then map.tiles.floor[y][x].tileset.quads = checkTile.tileset.quads end
 						end
-						if map.tiles.floor[y][x] then map.tiles.floor[y][x].isFloor = true end
 					end
 					-- Load Wall Tiles
 					if map.tiles.wall[y] and map.tiles.wall[y][x] then
@@ -209,9 +225,25 @@ function world.loadMap(key)
 						end
 						if map.tiles.wall[y][x] and map.tiles.wall[y][x].tileset then 
 							local checkTile = tile.getTile(map.tiles.wall[y][x].name)
-							if checkTile and checkTile.tileset and checkTile.tileset.tiles then map.tiles.wall[y][x].tileset.tiles = checkTile.tileset.tiles end
+							if checkTile and checkTile.tileset and checkTile.tileset.quads then map.tiles.wall[y][x].tileset.quads = checkTile.tileset.quads end
 						end
-						if map.tiles.wall[y][x] then map.tiles.wall[y][x].isFloor = false end
+					end
+					-- Load Roof Tiles
+					if map.tiles.roof[y] and map.tiles.roof[y][x] then
+						local holdTile = map.tiles.roof[y][x]
+						if type(holdTile) == "number" then
+							if holdTile ~= 0 then
+								map.tiles.roof[y][x] = tile.cloneTile(holdTile)
+							else
+								map.tiles.roof[y][x] = nil
+							end
+						elseif type(holdTile) == "table" then
+							map.tiles.roof[y][x] = tile.cloneTile(holdTile)
+						end
+						if map.tiles.roof[y][x] and map.tiles.roof[y][x].tileset then 
+							local checkTile = tile.getTile(map.tiles.roof[y][x].name)
+							if checkTile and checkTile.tileset and checkTile.tileset.quads then map.tiles.roof[y][x].tileset.quads = checkTile.tileset.quads end
+						end
 					end
 				end
 			end
@@ -224,8 +256,72 @@ end
 
 function world.saveMap(key,map)
 	if key then
+		local holdMap = nil
 		if map == nil then map = world.map end
-		local str = tableToString(map, {"ignore"})
+
+		if map then
+			if world.checkMap(map) then
+				local w, h = map.size.w, map.size.h
+				local ts = tile.tileSize
+				local cx, cy = camera.getPos()
+
+				holdMap = {}
+				holdMap.size = {w=w,h=h}
+				holdMap.tiles = {}
+				holdMap.tiles.floor = {}
+				holdMap.tiles.wall = {}
+				holdMap.tiles.roof = {}
+
+				for y=1, h do
+					holdMap.tiles.floor[y] = {}
+					holdMap.tiles.wall[y] = {}
+					holdMap.tiles.roof[y] = {}
+					for x=1, w do
+						if map.tiles.floor[y] and map.tiles.floor[y][x] then
+							local holdTile = map.tiles.floor[y][x]
+							local holdCheckTile = tile.getTile(holdTile.id)
+							if holdCheckTile and holdTile then
+								if compareTables(holdTile, holdCheckTile, {"ignore", "quads"}) then
+									holdMap.tiles.floor[y][x] = holdTile.id
+								else
+									holdMap.tiles.floor[y][x] = holdTile
+								end
+							end
+						else
+							holdMap.tiles.floor[y][x] = 0
+						end
+						if map.tiles.wall[y] and map.tiles.wall[y][x] then
+							local holdTile = map.tiles.wall[y][x]
+							local holdCheckTile = tile.getTile(holdTile.id)
+							if holdCheckTile and holdTile then
+								if compareTables(holdTile, holdCheckTile, {"ignore", "quads"}) then
+									holdMap.tiles.wall[y][x] = holdTile.id
+								else
+									holdMap.tiles.wall[y][x] = holdTile
+								end
+							end
+						else
+							holdMap.tiles.wall[y][x] = 0
+						end
+						if map.tiles.roof[y] and map.tiles.roof[y][x] then
+							local holdTile = map.tiles.roof[y][x]
+							local holdCheckTile = tile.getTile(holdTile.id)
+							if holdCheckTile and holdTile then
+								if compareTables(holdTile, holdCheckTile, {"ignore", "quads"}) then
+									holdMap.tiles.roof[y][x] = holdTile.id
+								else
+									holdMap.tiles.roof[y][x] = holdTile
+								end
+							end
+						else
+							holdMap.tiles.roof[y][x] = 0
+						end
+					end
+				end
+			end
+		end
+
+		local str = tableToString(holdMap, {"ignore", "quads"})
 		if str then
 			love.filesystem.write("/assets/maps/"..key..".lua", "return "..str)
 		end
@@ -240,12 +336,15 @@ function world.genWorld(w,h)
 	map.tiles = {}
 	map.tiles.floor = {}
 	map.tiles.wall = {}
+	map.tiles.roof = {}
 	for y=1, h do
 		map.tiles.floor[y] = {}
 		map.tiles.wall[y] = {}
+		map.tiles.roof[y] = {}
 		for x=1, w do
-			map.tiles.floor[y][x] = 4
+			map.tiles.floor[y][x] = 1
 			map.tiles.wall[y][x] = 0--math.random(0,2)*(tile.tileCount-1)
+			map.tiles.roof[y][x] = 0
 		end
 	end
 	world.loadMap(map)
@@ -253,35 +352,37 @@ end
 
 function world.checkMap(map)
 	if map then
-		if map.size and map.size.w and map.size.h and map.tiles and map.tiles.floor and map.tiles.wall then return true else return false end
+		if map.size and map.size.w and map.size.h and map.tiles and map.tiles.floor and map.tiles.wall and map.tiles.roof then return true else return false end
 	else
 		debug.log("[ERROR] Incorrect call to function 'world.checkMap(map)'")
 	end
 end
 
-function world.getTile(x,y,f)
+function world.getTile(x,y,l)
 	if x and y then
-		if f == nil then f = false end
+		if l == nil then l = "floor" end
 		local holdTile = nil
 		local ts = tile.tileSize
 		local map = world.map
 		x, y = math.ceil(x/ts), math.ceil(y/ts)
 		if map and x > 0 and x <= map.size.w and y > 0 and y <= map.size.h then
-			if f then
+			if l == "floor" then
 				if map.tiles.floor[y] and map.tiles.floor[y][x] then holdTile = map.tiles.floor[y][x] end
-			else
+			elseif l == "wall" then
 				if map.tiles.wall[y] and map.tiles.wall[y][x] then holdTile = map.tiles.wall[y][x] end
+			elseif l == "roof" then
+				if map.tiles.roof[y] and map.tiles.roof[y][x] then holdTile = map.tiles.roof[y][x] end
 			end
 		end
 		return holdTile
 	else
-		debug.log("[ERROR] Incorrect call to function 'world.getTile(x,y,f)'")
+		debug.log("[ERROR] Incorrect call to function 'world.getTile(x,y,l)'")
 	end
 end
 
-function world.setTile(x,y,key,f)
+function world.setTile(x,y,key,l)
 	if x and y and key then
-		if f == nil then f = false end
+		if l == nil then l = "floor" end
 		if x > 0 and y > 0 and x <= world.map.size.w and y <= world.map.size.h then
 			local holdTile = nil
 			if key ~= "" then holdTile = tile.cloneTile(key) end
@@ -289,13 +390,17 @@ function world.setTile(x,y,key,f)
 				local map = world.map
 				if map then
 					if world.checkMap(map) and map.tiles then
-						if f then
+						if l == "floor" then
 							if map.tiles.floor[y] then
 								map.tiles.floor[y][x] = holdTile
 							end
-						else
+						elseif l == "wall" then
 							if map.tiles.wall[y] then
 								map.tiles.wall[y][x] = holdTile
+							end
+						elseif l == "roof" then
+							if map.tiles.roof[y] then
+								map.tiles.roof[y][x] = holdTile
 							end
 						end
 						return holdTile
@@ -303,10 +408,10 @@ function world.setTile(x,y,key,f)
 				end
 			end
 		else
-			debug.log("[WARNING] Arguments 'x' and 'y' in call to function 'world.setTile(x,y,key,f)' are outside of the map bounds")
+			debug.log("[WARNING] Arguments 'x' and 'y' in call to function 'world.setTile(x,y,key,l)' are outside of the map bounds")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'world.setTile(x,y,key,f)'")
+		debug.log("[ERROR] Incorrect call to function 'world.setTile(x,y,key,l)'")
 	end
 end
 
