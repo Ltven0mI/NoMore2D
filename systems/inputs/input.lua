@@ -7,6 +7,7 @@ input.curText = ""
 input.keys = {}
 
 input.interact = "e"
+input.fire = "l"
 
 -- Callbacks --
 
