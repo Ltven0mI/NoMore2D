@@ -29,7 +29,9 @@ function world.update(dt)
 			local w, h = map.size.w, map.size.h
 			local ts = tile.tileSize
 			local cx, cy = camera.getPos()
-			local sx, sy, ex, ey = math.floor(math.clamp(cx/ts+1, 1, w)), math.floor(math.clamp(cy/ts+1, 1, h)), math.floor(math.clamp((cx+main.width)/ts+1, 1, w)), math.floor(math.clamp((cy+main.height)/ts+1, 1, h))
+			local player = game.player
+			local cs = camera.getScale()
+			local sx, sy, ex, ey = math.floor(math.clamp(cx/ts+1, 1, w)), math.floor(math.clamp(cy/ts+1, 1, h)), math.floor((cx+main.width/cs)/(ts))+1, math.floor((cy+main.height/cs)/(ts))+1
 			local holdTime = love.timer.getTime()
 			local holdLast = world.lastUpdate
 
@@ -111,7 +113,8 @@ function world.draw()
 			local w, h = map.size.w, map.size.h
 			local ts = tile.tileSize
 			local cx, cy = camera.getPos()
-			local sx, sy, ex, ey = math.floor(math.clamp(cx/ts+1, 1, w)), math.floor(math.clamp(cy/ts+1, 1, h)), math.floor(math.clamp((cx+main.width)/ts+1, 1, w)), math.floor(math.clamp((cy+main.height)/ts+1, 1, h))
+			local cs = camera.getScale()
+			local sx, sy, ex, ey = math.floor(math.clamp(cx/ts+1, 1, w)), math.floor(math.clamp(cy/ts+1, 1, h)), math.floor((cx+main.width/cs)/(ts))+1, math.floor((cy+main.height/cs)/(ts))+1
 
 			ui.push()
 				ui.setMode("world")
