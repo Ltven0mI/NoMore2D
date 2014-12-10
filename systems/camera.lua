@@ -5,7 +5,7 @@ camera.runPriority = 3
 -- Variables --
 camera.var = {}
 camera.var.pos = {x=0,y=0}
-camera.var.scale = 1
+camera.var.scale = 0.5
 camera.var.rot = 0
 camera.var.mode = "world"
 camera.var.modeOffset = {x=0, y=0}
@@ -20,6 +20,7 @@ camera.pushCount = 0
 function camera.load(args)
 	camera.window.w = main.w
 	camera.window.h = main.h
+	camera.var.scale = (main.width+main.height)/1750
 end
 
 function camera.draw()
@@ -86,6 +87,10 @@ end
 
 function camera.getMode()
 	return camera.var.mode
+end
+
+function camera.getScale()
+	return camera.var.scale
 end
 
 function camera.getMouse()
