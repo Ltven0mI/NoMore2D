@@ -15,7 +15,7 @@ networking.udp:settimeout(0)
 
 -- love callbacks --
 function networking.load()
-	networking:connect()
+	--networking:connect()
 end
 
 function networking.update(dt)
@@ -45,7 +45,7 @@ end
 
 function networking.keypressed(key)
 	if key == "v" then
-		
+		networking:connect()
 	end
 end
 
