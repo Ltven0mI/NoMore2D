@@ -50,7 +50,9 @@ function networking.keypressed(key)
 end
 
 function networking.quit()
-	networking:disconnect()
+	if networking.status == "connected" then
+		networking:disconnect()
+	end
 end
 
 -- networking callbacks --
