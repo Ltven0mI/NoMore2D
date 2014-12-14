@@ -94,7 +94,7 @@ function object.keyreleased(key)
 end
 
 function object.load(arg)
-	object.getObjects("/assets/objects")
+	object.getObjects("/objects")
 
 	for uid, obj in pairs(object.createdObjects) do
 		if obj.load then obj:load(arg) end
