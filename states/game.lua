@@ -25,4 +25,10 @@ function game.draw()
 	end
 end
 
+function game.keypressed(key)
+	if key == "escape" then
+		state.loadState("menu")
+	end
+end
+
 return game
