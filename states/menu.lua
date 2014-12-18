@@ -4,7 +4,8 @@ menu = {}
 function menu.draw()
 	ui.push()
 		ui.setMode("screen")
-		if ui.button(main.width/2, main.height/2, main.width/10, main.height/30, "Play") then state.loadState("game") end
+		local bw, bh = main.width/10, main.width/30
+		if ui.button(main.width/2-bw/2, main.height/2-bh/2, bw, bh, "Play") then state.loadState("game") end
 	ui.pop()
 end
 
