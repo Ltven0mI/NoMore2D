@@ -1,13 +1,19 @@
 game = {}
-game.systemKey = "game"
-game.runPriority = 18
 
 -- Variables --
 game.player = nil
 
 -- Callbacks --
-function game.load()
+function game.stateOpen()
+	world.genWorld(10,10)
 	game.player = object.new("player")
+end
+function game.stateClose()
+	world.clearMap()
+	if game.player ~= nil then
+		object.destroyObject(game.player)
+		game.player = nil
+	end
 end
 
 function game.draw()
