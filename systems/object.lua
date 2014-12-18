@@ -196,6 +196,7 @@ function object.getObjects(dir,isrepeat)
 				end
 			end
 		end
+		if not isrepeat then debug.log() end
 	else
 		debug.log("[ERROR] Incorrect call to function 'object.getObjects(dir,isrepeat)'")
 	end
