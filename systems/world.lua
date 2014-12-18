@@ -9,9 +9,6 @@ world.lastUpdate = 0
 
 -- Callbacks --
 function world.load()
-	world.genWorld(10,10)
-	--world.loadMap("level_01")
-
 	world.vignette = image.getImage("vignette")
 	world.vignette:setFilter("linear")
 
