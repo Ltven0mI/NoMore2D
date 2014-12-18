@@ -350,6 +350,12 @@ function world.genWorld(w,h)
 	world.loadMap(map)
 end
 
+function world.clearMap()
+	if world.map ~= nil then
+		world.map = nil
+	end
+end
+
 function world.checkMap(map)
 	if map then
 		if map.size and map.size.w and map.size.h and map.tiles and map.tiles.floor and map.tiles.wall and map.tiles.roof then return true else return false end
