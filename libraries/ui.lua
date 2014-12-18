@@ -150,6 +150,10 @@ function ui.setMode(mode)
 	end
 end
 
+function ui.getMode()
+	return ui.var.mode
+end
+
 function ui.push()
 	ui.pushCount = ui.pushCount + 1
 	ui.pushpop[ui.pushCount] = {}
