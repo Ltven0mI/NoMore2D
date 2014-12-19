@@ -101,6 +101,8 @@ function player:keypressed(key)
 		elseif tile and tile.interact then
 			tile:interact()
 		end
+		local hold = object.new("netplayer")
+		hold:setData()
 	end
 	if key == "k" then
 		self.weapon = object.new("gun")
@@ -183,7 +185,7 @@ function player:getTile(side,layer)
 		end
 		return holdTile
 	else
-		debug.log("[ERROR] Incorrect call to function 'player:getTile(side,layer)'")
+		debug.err("Incorrect call to function 'player:getTile(side,layer)'")
 	end
 end
 

@@ -121,7 +121,7 @@ function state.loadState(key)
 			debug.log("[WARNING] No state with key '"..key.."'")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'state.loadState(key)'")
+		debug.err("Incorrect call to function 'state.loadState(key)'")
 	end
 end
 
@@ -148,7 +148,7 @@ function state.getStates(dir,isrepeat)
 		end
 		if not isrepeat then debug.log() end
 	else
-		debug.log("[ERROR] Incorrect call to function 'state.getStates(dir,isrepeat)'")
+		debug.err("Incorrect call to function 'state.getStates(dir,isrepeat)'")
 	end
 end
 

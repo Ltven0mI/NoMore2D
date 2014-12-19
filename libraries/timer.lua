@@ -13,7 +13,8 @@ function timer.start(key)
 			return nil, "[WARNING] Timer allready exists with key '"..key.."'"
 		end
 	else
-		return nil, "[ERROR] Incorrect call the 'timer.start(key)'"
+		debug.err("[ERROR] Incorrect call the 'timer.start(key)'")
+		return nil
 	end
 end
 
@@ -27,7 +28,8 @@ function timer.stop(key)
 			return nil, "[WARNING] Timer does not exist with key '"..key.."'"
 		end
 	else
-		return nil, "[ERROR] Incorrect call the 'timer.stop(key)'"
+		debug.err("[ERROR] Incorrect call the 'timer.stop(key)'")
+		return nil
 	end
 end
 
@@ -39,7 +41,8 @@ function timer.get(key)
 			return nil, "[WARNING] Timer does not exist with key '"..key.."'"
 		end
 	else
-		return nil, "[ERROR] Incorrect call the 'timer.get(key)'"
+		debug.err("[ERROR] Incorrect call the 'timer.get(key)'")
+		return nil
 	end
 end
 

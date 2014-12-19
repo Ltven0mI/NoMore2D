@@ -48,7 +48,7 @@ function image.getImages(dir,isrepeat,images)
 		end
 		if not isrepeat then print(""); image.images = images end
 	else
-		debug.log("[ERROR] Incorrect call to function 'image.getImages(dir,isrepeat,images)'")
+		debug.err("Incorrect call to function 'image.getImages(dir,isrepeat,images)'")
 	end
 end
 
@@ -61,7 +61,7 @@ function image.getImage(key)
 			return image.images["missing"]
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'image.getImage(key)'")
+		debug.err("Incorrect call to function 'image.getImage(key)'")
 	end
 end
 

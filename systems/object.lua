@@ -171,7 +171,7 @@ function object.new(...)
 			return object.createdObjects[uid]
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'object.new(...)'")
+		debug.err("Incorrect call to function 'object.new(...)'")
 	end
 end
 
@@ -198,7 +198,7 @@ function object.getObjects(dir,isrepeat)
 		end
 		if not isrepeat then debug.log() end
 	else
-		debug.log("[ERROR] Incorrect call to function 'object.getObjects(dir,isrepeat)'")
+		debug.err("Incorrect call to function 'object.getObjects(dir,isrepeat)'")
 	end
 end
 
@@ -215,7 +215,7 @@ function object.getObject(uid)
 			return nil
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'object.getObject(uid)'")
+		debug.err("Incorrect call to function 'object.getObject(uid)'")
 	end
 end
 
@@ -233,7 +233,7 @@ function object.destroyObject(arg)
 			end
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'object.destroyObject(arg)'")
+		debug.err("Incorrect call to function 'object.destroyObject(arg)'")
 	end
 end
 

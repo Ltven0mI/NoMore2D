@@ -54,7 +54,7 @@ function collision.boundingBox(x1,y1,w1,h1,vx1,vy1,x2,y2,w2,h2)
 		hy = hy+vy1
 		return hx, hy, vx1, vy1, side
 	else
-		debug.log("[ERROR] Incorrect call to function 'collision.boundingBox(x1,y1,w1,h1,vx1,vy1,x2,y2,w2,h2)'")
+		debug.err("Incorrect call to function 'collision.boundingBox(x1,y1,w1,h1,vx1,vy1,x2,y2,w2,h2)'")
 		return 0, 0, 0, 0
 	end
 end
@@ -87,7 +87,7 @@ function collision.boundingCircle(x1,y1,r1,vx1,vy1,x2,y2,r2)
 
 		return x1, y1, vx1, vy1
 	else
-		debug.log("[ERROR] Incorrect call to function 'collision.boundingCircle(x1,y1,r1,vx1,vy1,x2,y2,r2)'")
+		debug.err("Incorrect call to function 'collision.boundingCircle(x1,y1,r1,vx1,vy1,x2,y2,r2)'")
 	end
 end
 

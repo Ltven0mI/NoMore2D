@@ -250,7 +250,7 @@ function world.loadMap(key)
 			world.map = map
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'world.loadMap(key)'")
+		debug.err("Incorrect call to function 'world.loadMap(key)'")
 	end
 end
 
@@ -326,7 +326,7 @@ function world.saveMap(key,map)
 			love.filesystem.write("/assets/maps/"..key..".lua", "return "..str)
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'world.saveMap(key,map)'")
+		debug.err("Incorrect call to function 'world.saveMap(key,map)'")
 	end
 end
 
@@ -360,7 +360,7 @@ function world.checkMap(map)
 	if map then
 		if map.size and map.size.w and map.size.h and map.tiles and map.tiles.floor and map.tiles.wall and map.tiles.roof then return true else return false end
 	else
-		debug.log("[ERROR] Incorrect call to function 'world.checkMap(map)'")
+		debug.err("Incorrect call to function 'world.checkMap(map)'")
 	end
 end
 
@@ -382,7 +382,7 @@ function world.getTile(x,y,l)
 		end
 		return holdTile
 	else
-		debug.log("[ERROR] Incorrect call to function 'world.getTile(x,y,l)'")
+		debug.err("Incorrect call to function 'world.getTile(x,y,l)'")
 	end
 end
 
@@ -417,7 +417,7 @@ function world.setTile(x,y,key,l)
 			debug.log("[WARNING] Arguments 'x' and 'y' in call to function 'world.setTile(x,y,key,l)' are outside of the map bounds")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'world.setTile(x,y,key,l)'")
+		debug.err("Incorrect call to function 'world.setTile(x,y,key,l)'")
 	end
 end
 

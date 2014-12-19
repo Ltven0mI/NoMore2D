@@ -37,7 +37,7 @@ function camera.setPos(x,y)
 		camera.var.pos.x = math.round(x)
 		camera.var.pos.y = math.round(y)
 	else
-		debug.log("[ERROR] Incorrect call to function 'camera.setPos(x,y)'")
+		debug.err("Incorrect call to function 'camera.setPos(x,y)'")
 	end
 end
 
@@ -48,7 +48,7 @@ function camera.centerPos(x,y)
 		camera.var.scaleOffset.x = math.round((main.width/2/camera.var.scale)*(-camera.var.scale+1))
 		camera.var.scaleOffset.y = math.round((main.height/2/camera.var.scale)*(-camera.var.scale+1))
 	else
-		debug.log("[ERROR] Incorrect call to function 'camera.center(x,y)'")
+		debug.err("Incorrect call to function 'camera.center(x,y)'")
 	end
 end
 
@@ -81,7 +81,7 @@ function camera.setMode(mode)
 			debug.log("[WARNING] Argument 'mode' in call to function 'camera.setMode(mode)' must be 'world' or 'screen'")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'camera.setMode(mode)'")
+		debug.err("Incorrect call to function 'camera.setMode(mode)'")
 	end
 end
 

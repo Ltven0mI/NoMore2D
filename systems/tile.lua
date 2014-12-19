@@ -34,7 +34,7 @@ function tile.cloneTile(key)
 			return newTile
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'tile.cloneTile(key)'")
+		debug.err("Incorrect call to function 'tile.cloneTile(key)'")
 	end
 end
 
@@ -48,7 +48,7 @@ function tile.getTile(key)
 			end
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'tile.getTile(key)'")
+		debug.err("Incorrect call to function 'tile.getTile(key)'")
 	end
 end
 
@@ -78,7 +78,7 @@ function tile.addTile(key)
 			debug.log("[WARNING] No existing tile with the key '"..key.."'")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'tile.addTile(key)'")
+		debug.err("Incorrect call to function 'tile.addTile(key)'")
 	end
 end
 
@@ -100,7 +100,7 @@ function tile.getTileset(t)
 			end
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'tile.getTileset(t)'")
+		debug.err("Incorrect call to function 'tile.getTileset(t)'")
 	end
 end
 
@@ -150,7 +150,7 @@ function tile.getTiles(dir,isrepeat,tiles)
 		end
 		if not isrepeat then print(""); tile.unsortedTiles = tiles end
 	else
-		debug.log("[ERROR] Incorrect call to function 'tile.getTiles(dir,isrepeat,tiles)'")
+		debug.err("Incorrect call to function 'tile.getTiles(dir,isrepeat,tiles)'")
 	end
 end
 

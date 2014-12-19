@@ -52,7 +52,7 @@ function input.isDown(key)
 			return false
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'input.isDown(key)'")
+		debug.err("Incorrect call to function 'input.isDown(key)'")
 		return nil
 	end
 end
@@ -65,7 +65,7 @@ function input.onDown(key)
 			return false
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'input.onDown(key)'")
+		debug.err("Incorrect call to function 'input.onDown(key)'")
 		return nil
 	end
 end
@@ -78,7 +78,7 @@ function input.onUp(key)
 			return false
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'input.onUp(key)'")
+		debug.err("Incorrect call to function 'input.onUp(key)'")
 		return nil
 	end
 end

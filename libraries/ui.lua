@@ -34,7 +34,7 @@ function ui.mouseOver(x,y,w,h)
 		if camera then mx, my = camera.getMouse() else mx, my = love.mouse.getPosition() end
 		if mx>x and mx<x+w and my>y and my<y+h then return true else return false end
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.mouseOver(x,y,w,h)'")
+		debug.err("Incorrect call to function 'ui.mouseOver(x,y,w,h)'")
 	end
 end
 
@@ -48,7 +48,7 @@ function ui.updateColor(cType,md,mo)
 			debug.log("[WARNING] Argument 'cType' in call to function 'ui.updateColor(cType,md,mo)' must be 'fg' or 'bg'")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.updateColor(cType,md,mo)'")
+		debug.err("Incorrect call to function 'ui.updateColor(cType,md,mo)'")
 	end
 end
 
@@ -56,7 +56,7 @@ function ui.setCurrentColor(color)
 	if color and type(color) == "table" and color.r and color.g and color.b and color.a then
 		love.graphics.setColor(color.r, color.g, color.b, color.a)
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.setCurrentColor(color)'")
+		debug.err("Incorrect call to function 'ui.setCurrentColor(color)'")
 	end
 end
 
@@ -113,7 +113,7 @@ function ui.setColor(cType,cState,color,aux)
 			end
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.setColor(cType,cState,color,aux)'")
+		debug.err("Incorrect call to function 'ui.setColor(cType,cState,color,aux)'")
 	end
 end
 
@@ -125,7 +125,7 @@ function ui.setStyle(style)
 			debug.log("[WARNING] Argument 'style' in call to function 'ui.setStyle(style)' must be 'fill' 'line' or 'outline'")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.setStyle(style)'")
+		debug.err("Incorrect call to function 'ui.setStyle(style)'")
 	end
 end
 
@@ -134,7 +134,7 @@ function ui.setLineWidth(width)
 		ui.var.lineWidth = width
 		love.graphics.setLineWidth(width)
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.setLineWidth(width)'")
+		debug.err("Incorrect call to function 'ui.setLineWidth(width)'")
 	end
 end
 
@@ -146,7 +146,7 @@ function ui.setMode(mode)
 			debug.log("[WARNING] Argument 'mode' in call to function 'ui.setMode(mode)' must be 'world' or 'screen'")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.setMode(mode)'")
+		debug.err("Incorrect call to function 'ui.setMode(mode)'")
 	end
 end
 
@@ -180,7 +180,7 @@ function ui.beginGroup(x,y,w,h)
 		love.graphics.setScissor(x+mo.x, y+mo.y, w, h)
 		ui.groupCount = ui.groupCount + 1
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.beginGroup(x,y,w,h)'")
+		debug.err("Incorrect call to function 'ui.beginGroup(x,y,w,h)'")
 	end
 end
 
@@ -189,7 +189,7 @@ function ui.endGroup()
 		love.graphics.setScissor()
 		ui.groupCount = ui.groupCount - 1
 	else
-		debug.log("[ERROR] Uneven 'ui.beginGroup(x,y,w,h)' to 'ui.endGroup()'")
+		debug.err("Uneven 'ui.beginGroup(x,y,w,h)' to 'ui.endGroup()'")
 	end
 end
 
@@ -219,7 +219,7 @@ function ui.dropButton(text,style,btn)
 			if mo and od then return true else return false end
 		end
 	else
-		debug.log("[ERROR] 'ui.dropButton(text,style,btn)' must be called inside a 'ui.dropStart(x,y,w,h,act,text,style,btn)' and 'ui.dropEnd()'")
+		debug.err("'ui.dropButton(text,style,btn)' must be called inside a 'ui.dropStart(x,y,w,h,act,text,style,btn)' and 'ui.dropEnd()'")
 	end
 end
 
@@ -251,7 +251,7 @@ function ui.dropStart(x,y,w,h,act,text,style,btn)
 			debug.log("[WARNING] Uneven 'ui.dropStart(x,y,w,h,act,text,style,btn)' to 'ui.dropEnd()'")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.dropStart(x,y,w,h,act,text,style,btn)'")
+		debug.err("Incorrect call to function 'ui.dropStart(x,y,w,h,act,text,style,btn)'")
 	end
 end
 
@@ -281,7 +281,7 @@ function ui.draw(drawable,x,y,w,h,r)
 		end
 		camera.setMode(cm)
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.draw(drawable,x,y,w,h,r)'")
+		debug.err("Incorrect call to function 'ui.draw(drawable,x,y,w,h,r)'")
 	end
 end
 
@@ -296,7 +296,7 @@ function ui.rectangle(x,y,w,h,style)
 		if style == "fill" then love.graphics.rectangle("fill", x, y, w, h) end
 		camera.setMode(cm)
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.rectangle(x,y,w,h,style)'")
+		debug.err("Incorrect call to function 'ui.rectangle(x,y,w,h,style)'")
 		return nil
 	end
 end
@@ -325,7 +325,7 @@ function ui.tickbox(x,y,w,h,act,style,btn)
 		camera.setMode(cm)
 		return act
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.tickbox(x,y,w,h,act,style,btn)'")
+		debug.err("Incorrect call to function 'ui.tickbox(x,y,w,h,act,style,btn)'")
 		return nil
 	end
 end
@@ -345,7 +345,7 @@ function ui.imageButton(img,x,y,w,h,r,btn)
 		camera.setMode(cm)
 		if mo and od then return true else return false end
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.imageButton(img,x,y,w,h,r,btn)'")
+		debug.err("Incorrect call to function 'ui.imageButton(img,x,y,w,h,r,btn)'")
 	end
 end
 
@@ -368,7 +368,7 @@ function ui.button(x,y,w,h,text,style,btn)
 		camera.setMode(cm)
 		if mo and od then return true else return false end
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.button(x,y,w,h,text,style,btn)'")
+		debug.err("Incorrect call to function 'ui.button(x,y,w,h,text,style,btn)'")
 		return nil
 	end
 end
@@ -396,7 +396,7 @@ function ui.textbox(x,y,w,h,act,text,style,btn)
 		camera.setMode(cm)
 		return act, text
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.textbox(x,y,w,h,act,text,style,btn)'")
+		debug.err("Incorrect call to function 'ui.textbox(x,y,w,h,act,text,style,btn)'")
 		return nil
 	end
 end
@@ -440,7 +440,7 @@ function ui.slider(x,y,w,h,p,pm,typ,text,style,btn)
 		camera.setMode(cm)
 		return p
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.slider(x,y,w,h,p,pm,typ,text,style)'")
+		debug.err("Incorrect call to function 'ui.slider(x,y,w,h,p,pm,typ,text,style)'")
 		return nil
 	end
 end
@@ -479,7 +479,7 @@ function ui.bar(x,y,w,h,p,pm,typ,text,style)
 		love.graphics.print(text, x+w/2-fw/2, y+h/2-fh/2)
 		camera.setMode(cm)
 	else
-		debug.log("[ERROR] Incorrect call to function 'ui.bar(x,y,w,h,p,pm,typ,text,style)'")
+		debug.err("Incorrect call to function 'ui.bar(x,y,w,h,p,pm,typ,text,style)'")
 	end
 end
 

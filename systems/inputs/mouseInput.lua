@@ -43,7 +43,7 @@ function love.mouse.onDown(btn)
 			debug.log("[WARNING] Argument 'btn' in call to function 'love.mouse.onDown(btn)' must be 'l' 'm' 'r' 'x1' or 'x2'")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'love.mouse.onDown(btn)'")
+		debug.err("Incorrect call to function 'love.mouse.onDown(btn)'")
 		return nil
 	end
 end
@@ -56,7 +56,7 @@ function love.mouse.onUp(btn)
 			debug.log("[WARNING] Argument 'btn' in call to function 'love.mouse.onUp(btn)' must be 'l' 'm' 'r' 'x1' or 'x2'")
 		end
 	else
-		debug.log("[ERROR] Incorrect call to function 'love.mouse.onUp(btn)'")
+		debug.err("Incorrect call to function 'love.mouse.onUp(btn)'")
 		return nil
 	end
 end

@@ -138,7 +138,7 @@ function math.clamp(num,min,max)
 		if num > max then num = max end
 		return num
 	else
-		debug.log("[ERROR] Incorrect call to function 'math.clamp(num,min,max)'")
+		debug.err("Incorrect call to function 'math.clamp(num,min,max)'")
 		return nil
 	end
 end
@@ -148,7 +148,7 @@ function math.lerp(n1,n2,t)
 		local dt = love.timer.getDelta()
 		return n1 + ((n2-n1)*t)*(dt*100)
 	else
-		debug.log("[ERROR] Incorrect call to function 'math.lerp(n1,n2,t)'")
+		debug.err("Incorrect call to function 'math.lerp(n1,n2,t)'")
 	end
 end
 
@@ -166,7 +166,7 @@ function math.anglerp(n1,n2,t)
 		if n1 < 0 then n1 = n1 + 360 end
 		return n1
 	else
-		debug.log("[ERROR] Incorrect call to function 'math.anglerp(n1,n2,t)'")
+		debug.err("Incorrect call to function 'math.anglerp(n1,n2,t)'")
 	end
 end
 
@@ -178,7 +178,7 @@ function math.norm(x,y)
 		if yy ~= yy then yy = 0 end
 		return xx, yy
 	else
-		debug.log("[ERROR] Incorrect call to function 'math.norm(x,y)'")
+		debug.err("Incorrect call to function 'math.norm(x,y)'")
 	end
 end
 
