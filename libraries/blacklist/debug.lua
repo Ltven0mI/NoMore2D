@@ -14,6 +14,14 @@ function debug.write(...)
 	end
 end
 
+function debug.err(...)
+	if main.debugMode == true then
+		local msg = ""
+		for k, v in pairs({...}) do msg = msg..tostring(v).." " end
+		love.errhand(msg)
+	end
+end
+
 function debug.start(key,msg)
 	if key and type(key) == "string" then
 		local t, err = timer.start(key)
