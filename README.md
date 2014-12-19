@@ -1,7 +1,9 @@
 # NoMore2D
 
 ## Description
-NoMore is a 2D game made in Love2D using WLib (https://github.com/Ltven0mI/Wlib)
+NoMore is a 2D zombie apocalypse survival game.
+Based around survival in the harsh dynamic terrain by
+scavenging for loot and seeking shelter from all.
 
 
 ## License
