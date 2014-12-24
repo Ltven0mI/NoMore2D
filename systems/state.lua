@@ -114,6 +114,7 @@ function state.loadState(key)
 			if state.currentState ~= nil then
 				if state.currentState.stateClose then state.currentState.stateClose() end
 				state.currentState = nil
+				object.clearObjects()
 			end
 			state.currentState = state.states[key]
 			if state.currentState.stateOpen then state.currentState.stateOpen() end
