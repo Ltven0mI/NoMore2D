@@ -8,6 +8,7 @@ input.keys = {}
 
 input.interact = "e"
 input.fire = "l"
+input.inventory = "i"
 
 -- Callbacks --
 
