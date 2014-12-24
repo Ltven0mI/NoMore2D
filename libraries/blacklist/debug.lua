@@ -19,6 +19,7 @@ function debug.err(...)
 		local msg = ""
 		for k, v in pairs({...}) do msg = msg..tostring(v).." " end
 		love.errhand(msg)
+		love.event.quit()
 	end
 end
 
