@@ -68,7 +68,7 @@ function state.load()
 	state.getStates("/states")
 	state.loadState(state.startState)
 
-	if state.currentState.load then state.currentState.load() end
+	if state.currentState and state.currentState.load then state.currentState.load() end
 end
 
 function state.mousefocus(f)
