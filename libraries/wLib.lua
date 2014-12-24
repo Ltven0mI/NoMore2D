@@ -182,4 +182,17 @@ function math.norm(x,y)
 	end
 end
 
+function math.contains(x1,y1,w1,h1,x2,y2,w2,h2)
+	if x1 and y1 and w1 and h1 and x2 and y2 and w2 and h2 then
+		if (x2<x1 and x2+w2>x1 or x2<x1+w1 and x2+w2>x1+w1 or x2>=x1 and x2+w2<=x1+w1) then
+			if ((y2<y1 and y2+h2>y1) or (y2<y1+h1 and y2+h2>y1+h1) or (y2>=y1 and y2+h2<=y1+h1)) then
+				return true
+			end
+		end
+		return false
+	else
+		debug.err("Incorrect call to function 'math.contains(x1,y1,w1,h1,x2,y2,w2,h2)'")
+	end
+end
+
 return wLib
