@@ -1,4 +1,4 @@
-grass_dirt_01 = {}
+local grass_dirt_01 = {}
 grass_dirt_01.name = "grass_dirt_01"
 grass_dirt_01.imageKey = "grass_dirt_01"
 grass_dirt_01.collision = false

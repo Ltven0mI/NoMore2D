@@ -1,4 +1,4 @@
-cog_spin = {}
+local cog_spin = {}
 cog_spin.name = "cog_spin"
 cog_spin.imageKey = "cog_spin"
 

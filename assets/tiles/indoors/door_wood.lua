@@ -1,4 +1,4 @@
-door_wood = {}
+local door_wood = {}
 door_wood.name = "door_wood"
 door_wood.imageKey = "door_wood"
 door_wood.collision = true
