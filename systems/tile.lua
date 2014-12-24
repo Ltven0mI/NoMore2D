@@ -70,7 +70,6 @@ function tile.addTile(key)
 		if holdTile then
 			tile.tileCount = tile.tileCount + 1
 			holdTile.id = tile.tileCount
-			holdTile.ignore.tString = tableToString(holdTile, {"ignore"})
 			tile.tiles[tile.tileCount] = holdTile
 			tile.tiles[key] = holdTile
 			debug.log("[TILE] Added tile '"..key.."' with the keys '"..key.."' and '"..tile.tileCount.."'")
