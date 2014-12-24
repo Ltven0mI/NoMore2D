@@ -9,59 +9,59 @@ state.startState = "menu"
 
 -- Callbacks --
 function state.draw()
-	if state.currentState.draw then state.currentState.draw() end
+	if state.currentState and state.currentState.draw then state.currentState.draw() end
 end
 
 function state.errhand(msg)
-	if state.currentState.errhand then state.currentState.errhand(msg) end
+	if state.currentState and state.currentState.errhand then state.currentState.errhand(msg) end
 end
 
 function state.focus(f)
-	if state.currentState.focus then state.currentState.focus(f) end
+	if state.currentState and state.currentState.focus then state.currentState.focus(f) end
 end
 
 function state.gamepadaxis(joystick,axis,value)
-	if state.currentState.gamepadaxis then state.currentState.gamepadaxis(joystick,axis,value) end
+	if state.currentState and state.currentState.gamepadaxis then state.currentState.gamepadaxis(joystick,axis,value) end
 end
 
 function state.gamepadpressed(joystick,button)
-	if state.currentState.gamepadpressed then state.currentState.gamepadpressed(joystick,button) end
+	if state.currentState and state.currentState.gamepadpressed then state.currentState.gamepadpressed(joystick,button) end
 end
 
 function state.gamepadreleased(joystick,button)
-	if state.currentState.gamepadreleased then state.gamepadreleased(joystick,button) end
+	if state.currentState and state.currentState.gamepadreleased then state.gamepadreleased(joystick,button) end
 end
 
 function state.joystickadded(joystick)
-	if state.currentState.joystickadded then state.currentState.joystickadded(joystick) end
+	if state.currentState and state.currentState.joystickadded then state.currentState.joystickadded(joystick) end
 end
 
 function state.joystickaxis(joystick,axis,value)
-	if state.currentState.joystickaxis then state.currentState.joystickaxis(joystick,axis,value) end
+	if state.currentState and state.currentState.joystickaxis then state.currentState.joystickaxis(joystick,axis,value) end
 end
 
 function state.joystickhat(joystick,hat,direction)
-	if state.currentState.joystickhat then state.currentState.joystickhat(joystick,hat,direction) end
+	if state.currentState and state.currentState.joystickhat then state.currentState.joystickhat(joystick,hat,direction) end
 end
 
 function state.joystickpressed(joystick,button)
-	if state.currentState.joystickpressed then state.currentState.joystickpressed(joystick,button) end
+	if state.currentState and state.currentState.joystickpressed then state.currentState.joystickpressed(joystick,button) end
 end
 
 function state.joystickreleased(joystick,button)
-	if state.currentState.joystickreleased then state.currentState.joystickreleased(joystick,button) end
+	if state.currentState and state.currentState.joystickreleased then state.currentState.joystickreleased(joystick,button) end
 end
 
 function state.joystickremoved(joystick)
-	if state.currentState.joystickremoved then state.currentState.joystickremoved(joystick) end
+	if state.currentState and state.currentState.joystickremoved then state.currentState.joystickremoved(joystick) end
 end
 
 function state.keypressed(key,isrepeat)
-	if state.currentState.keypressed then state.currentState.keypressed(key,isrepeat) end
+	if state.currentState and state.currentState.keypressed then state.currentState.keypressed(key,isrepeat) end
 end
 
 function state.keyreleased(key)
-	if state.currentState.keyreleased then state.currentState.keyreleased(key) end
+	if state.currentState and state.currentState.keyreleased then state.currentState.keyreleased(key) end
 end
 
 function state.load()
@@ -72,39 +72,39 @@ function state.load()
 end
 
 function state.mousefocus(f)
-	if state.currentState.mousefocus then state.mousefocus(f) end
+	if state.currentState and state.currentState.mousefocus then state.mousefocus(f) end
 end
 
 function state.mousepressed(x,y,button)
-	if state.currentState.mousepressed then state.currentState.mousepressed(x,y,button) end
+	if state.currentState and state.currentState.mousepressed then state.currentState.mousepressed(x,y,button) end
 end
 
 function state.mousereleased(x,y,button)
-	if state.currentState.mousereleased then state.currentState.mousereleased(x,y,button) end
+	if state.currentState and state.currentState.mousereleased then state.currentState.mousereleased(x,y,button) end
 end
 
 function state.quit()
-	if state.currentState.quit then state.currentState.quit() end
+	if state.currentState and state.currentState.quit then state.currentState.quit() end
 end
 
 function state.resize(w,h)
-	if state.currentState.resize then state.currentState.resize(w,h) end
+	if state.currentState and state.currentState.resize then state.currentState.resize(w,h) end
 end
 
 function state.textinput(text)
-	if state.currentState.textinput then state.currentState.textinput(text) end
+	if state.currentState and state.currentState.textinput then state.currentState.textinput(text) end
 end
 
 function state.threaderror(thread,errorstr)
-	if state.currentState.threaderror then state.currentState.threaderror(thread,errorstr) end
+	if state.currentState and state.currentState.threaderror then state.currentState.threaderror(thread,errorstr) end
 end
 
 function state.update(dt)
-	if state.currentState.update then state.currentState.update(dt) end
+	if state.currentState and state.currentState.update then state.currentState.update(dt) end
 end
 
 function state.visible(v)
-	if state.currentState.visible then state.currentState.visible(v) end
+	if state.currentState and state.currentState.visible then state.currentState.visible(v) end
 end
 
 -- Funcitons --
