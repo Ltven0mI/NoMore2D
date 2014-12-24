@@ -1,4 +1,4 @@
-gun = {}
+local gun = {}
 gun.name = "gun"
 
 gun.fireSpeed = 10

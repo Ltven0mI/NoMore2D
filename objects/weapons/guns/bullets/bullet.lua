@@ -1,4 +1,4 @@
-bullet = {}
+local bullet = {}
 bullet.name = "bullet"
 
 bullet.pos = {x=0,y=0}

@@ -1,4 +1,4 @@
-player = {}
+local player = {}
 
 -- Variables --
 player.tpos = {x=0,y=0}
@@ -15,8 +15,18 @@ player.editTile = 1
 player.editTileCords = {x=1,y=1}
 
 player.weapon = nil
+player.inventory = nil
 
 -- Callbacks --
+function player:created()
+	self.inventory = object.new("inventory", 10, 10)
+end
+
+function player:onDestroy()
+	if self.inventory then object.destroyObject(self.inventory); self.inventory = nil end
+	if self.weapon then object.destroyObject(self.weapon); self.weapon = nil end
+end
+
 function player:update(dt)
 	self.vel.x, self.vel.y = 0, 0
 	if love.keyboard.isDown("w") and not love.keyboard.isDown("s") then self.vel.y = -self.speed end
@@ -102,7 +112,10 @@ function player:keypressed(key)
 			tile:interact()
 		end
 		local hold = object.new("netplayer")
-		hold:setData()
+		hold:setData(nil, nil, self.curRot)
+	end
+	if key == input.inventory then
+		if self.inventory ~= nil then self.inventory.open = not self.inventory.open end
 	end
 	if key == "k" then
 		self.weapon = object.new("gun")
