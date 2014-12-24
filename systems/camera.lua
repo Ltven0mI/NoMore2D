@@ -95,7 +95,7 @@ end
 
 function camera.getMouse()
 	local mx, my = love.mouse.getPosition()
-	if camera.var.mode == "world" then return mx+camera.var.pos.x+camera.var.scaleOffset.x, my+camera.var.pos.y+camera.var.scaleOffset.y elseif camera.var.mode == "screen" then return mx, my end
+	if camera.var.mode == "world" then return math.round((mx+camera.var.pos.x*camera.var.scale)/camera.var.scale), math.round((my+camera.var.pos.y*camera.var.scale)/camera.var.scale) elseif camera.var.mode == "screen" then return mx, my end
 end
 
 function camera.push()
