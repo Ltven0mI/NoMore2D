@@ -111,8 +111,6 @@ function player:keypressed(key)
 		elseif tile and tile.interact then
 			tile:interact()
 		end
-		local hold = object.new("netplayer")
-		hold:setData(nil, nil, self.curRot)
 	end
 	if key == input.inventory then
 		if self.inventory ~= nil then self.inventory.open = not self.inventory.open end
