@@ -16,12 +16,9 @@ function game.stateClose()
 	end
 end
 
-function game.draw()
+function game.drawscreen()
 	if main.debugMode then
-		camera.push()
-			camera.setMode("screen")
-			love.graphics.print(love.timer.getFPS(), 0, 0)
-		camera.pop()
+		love.graphics.print(love.timer.getFPS(), 0, 0)
 	end
 end
 
