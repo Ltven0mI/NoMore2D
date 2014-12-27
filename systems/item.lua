@@ -16,10 +16,14 @@ end
 -- Functions --
 function item.addItems()
 	item.addItem("gun")
+	item.addItem("shotgun")
+	item.addItem("spas")
 	item.addItem("m4a1")
 	item.addItem("uzi")
 	item.addItem("mag_nato")
 	item.addItem("mag_uzi")
+	item.addItem("shells_buckshot")
+	item.addItem("shells_slug")
 	debug.log("")
 end
 
@@ -48,6 +52,7 @@ function item.cloneItem(key)
 				local newItem = cloneTable(holdItem, {"function"})
 				local itemClass = nil
 				if holdItem.itemClass then if holdItem.itemClass == "self" then itemClass = holdItem else itemClass = item.getItem(holdItem.itemClass) end end
+				if itemClass == nil then itemClass = holdItem end
 				setmetatable(newItem, { __index = itemClass })
 				return newItem
 			else
@@ -58,6 +63,7 @@ function item.cloneItem(key)
 			local newItem = cloneTable(holdItem, {"function"})
 			local itemClass = nil
 			if holdItem.itemClass then if holdItem.itemClass == "self" then itemClass = holdItem else itemClass = item.getItem(holdItem.itemClass) end end
+			if itemClass == nil then itemClass = holdItem end
 			setmetatable(newItem, { __index = itemClass })
 			return newItem
 		end
@@ -88,9 +94,9 @@ function item.getItems(dir,isrepeat,items)
 		local files = love.filesystem.getDirectoryItems(dir)
 		local lng = table.getn(files)
 		for i=1, lng do
-			local item = string.lower(files[i])
-			local key = item:gsub(".lua", "")
-			if love.filesystem.isFile(dir.."/"..item) then
+			local itemKey = string.lower(files[i])
+			local key = itemKey:gsub(".lua", "")
+			if love.filesystem.isFile(dir.."/"..itemKey) then
 				if key ~= "" then
 					local holdItem = require(dir.."/"..key)
 					if holdItem and type(holdItem) == "table" then
@@ -118,8 +124,8 @@ function item.getItems(dir,isrepeat,items)
 						end
 					end
 				end
-			elseif love.filesystem.isDirectory(dir.."/"..item) and item ~= "blacklist" then
-				item.getItems(dir.."/"..item, true, items)
+			elseif love.filesystem.isDirectory(dir.."/"..itemKey) and itemKey ~= "blacklist" then
+				item.getItems(dir.."/"..itemKey, true, items)
 			end
 		end
 		if not isrepeat then print(""); item.unsortedItems = items end
