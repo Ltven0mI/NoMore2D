@@ -159,7 +159,7 @@ function player:equipItem(i)
 	if i then
 		if i.itemType == "weapon" then
 			local holdItem = nil
-			if self.weapon ~= nil then self.inventory:addItem(self.weapon.id) end
+			if self.weapon ~= nil then self.weapon.parent = nil; self.inventory:addItem(self.weapon) end
 			self.weapon = i
 			self.weapon.parent = self
 			self.inventory.heldItem = nil
@@ -167,7 +167,7 @@ function player:equipItem(i)
 		if i.itemType == "magazine" then
 			local holdItem = nil
 			if i.roundType == self.weapon.magType then
-				if self.weapon.attach.mag ~= nil then self.inventory:addItem(self.weapon.attach.mag.id) end
+				if self.weapon.attach.mag ~= nil then self.inventory:addItem(self.weapon.attach.mag) end
 				self.weapon.attach.mag = i
 				self.inventory.heldItem = nil
 			end
