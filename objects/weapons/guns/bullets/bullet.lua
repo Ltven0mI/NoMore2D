@@ -18,11 +18,8 @@ function bullet:update(dt)
 	if self.curLife >= self.life then object.destroyObject(self) end
 end
 
-function bullet:draw()
-	ui.push()
-		ui.setMode("world")
-		ui.draw(image.getImage("bullet_01"), math.round(self.pos.x), math.round(self.pos.y), self.size.w, self.size.h, self.rot)
-	ui.pop()
+function bullet:drawworld()
+	ui.draw(image.getImage("bullet_01"), math.round(self.pos.x), math.round(self.pos.y), self.size.w, self.size.h, self.rot)
 end
 
 -- Functions --
