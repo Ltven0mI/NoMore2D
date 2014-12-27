@@ -24,7 +24,6 @@ end
 
 function player:onDestroy()
 	if self.inventory then object.destroyObject(self.inventory); self.inventory = nil end
-	if self.weapon then object.destroyObject(self.weapon); self.weapon = nil end
 end
 
 function player:update(dt)
@@ -45,7 +44,7 @@ function player:update(dt)
 		if self.vel.y > 0 then self.rot = 180 elseif self.vel.y < 0 then self.rot = 0 end
 	end
 
-	local mx, my = camera.getMouse()
+	local mx, my = camera.getMouse("world")
 	if love.mouse.isDown("l") or love.mouse.isDown("r") or love.mouse.isDown("m") then self.rot = (math.atan2((my-(self.pos.y+self.size/2)), (mx-(self.pos.x+self.size/2)))*180/math.pi)+90 end
 	if self.rot < 0 then self.rot = 270+(self.rot+90) end
 	self.rot = (math.floor((self.rot+22.5)/45))*45
@@ -79,6 +78,14 @@ function player:update(dt)
 	if love.mouse.isDown(input.fire) then
 		if self.weapon and self.weapon.attack then self.weapon:attack() end
 	end
+	if self.inventory and self.inventory.heldItem then
+		if love.mouse.onDown("l") then
+			local mx, my = camera.getMouse("world")
+			if math.contains(self.pos.x, self.pos.y, self.size, self.size, mx, my, 1, 1) then
+				self:equipItem(self.inventory.heldItem)
+			end
+		end
+	end
 
 	--[[local ts = tile.tileSize
 	local x, y = camera.getMouse()
@@ -95,11 +102,8 @@ function player:update(dt)
 	end]]
 end
 
-function player:draw()
-	ui.push()
-		ui.setMode("world")
-		ui.draw(image.getImage("player_01"), math.round(self.pos.x), math.round(self.pos.y), self.size, self.size, self.curRot)
-	ui.pop()
+function player:drawworld()
+	ui.draw(image.getImage("player_01"), math.round(self.pos.x), math.round(self.pos.y), self.size, self.size, self.curRot)
 end
 
 function player:keypressed(key)
@@ -114,10 +118,6 @@ function player:keypressed(key)
 	end
 	if key == input.inventory then
 		if self.inventory ~= nil then self.inventory.open = not self.inventory.open end
-	end
-	if key == "k" then
-		self.weapon = object.new("gun")
-		self.weapon.parent = self
 	end
 	if key == "f" then
 		if self.editLayer == "floor" then
@@ -155,6 +155,28 @@ function player:keypressed(key)
 end
 
 -- Functions --
+function player:equipItem(i)
+	if i then
+		if i.itemType == "weapon" then
+			local holdItem = nil
+			if self.weapon ~= nil then self.inventory:addItem(self.weapon.id) end
+			self.weapon = i
+			self.weapon.parent = self
+			self.inventory.heldItem = nil
+		end
+		if i.itemType == "magazine" then
+			local holdItem = nil
+			if i.roundType == self.weapon.magType then
+				if self.weapon.attach.mag ~= nil then self.inventory:addItem(self.weapon.attach.mag.id) end
+				self.weapon.attach.mag = i
+				self.inventory.heldItem = nil
+			end
+		end
+	else
+		debug.err("Incorrect call to function 'player:equipItem(i)'")
+	end
+end
+
 function player:checkCollision()
 	local map = world.map
 	if map then
