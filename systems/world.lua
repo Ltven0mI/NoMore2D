@@ -102,7 +102,7 @@ function world.update(dt)
 	world.lastUpdate = love.timer.getTime()
 end
 
-function world.draw()
+function world.drawworld()
 	local pri = loader.getPriority()
 	local map = world.map
 	if map then
@@ -112,69 +112,64 @@ function world.draw()
 			local cx, cy = camera.getPos()
 			local cs = camera.getScale()
 			local sx, sy, ex, ey = math.floor(math.clamp(cx/ts+1, 1, w)), math.floor(math.clamp(cy/ts+1, 1, h)), math.floor((cx+main.width/cs)/(ts))+1, math.floor((cy+main.height/cs)/(ts))+1
-
-			ui.push()
-				ui.setMode("world")
-				for y=sy, ey do
-					for x=sx, ex do
-						-- Draw Floor Tiles
-						if map.tiles.floor[y] and map.tiles.floor[y][x] then
-							local holdTile = map.tiles.floor[y][x]
-							if holdTile.drawable then
-								local drawQuad
-								local tileset = holdTile.tileset
-								if tileset and tileset.quads and tileset.quads and tileset.quads[tileset.ty] and tileset.quads[tileset.ty][tileset.tx] then drawQuad = tileset.quads[tileset.ty][tileset.tx] end
-								if pri == world.runPriority[1] then
-									if drawQuad then
-										ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
-									else
-										ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
-									end
+			for y=sy, ey do
+				for x=sx, ex do
+					-- Draw Floor Tiles
+					if map.tiles.floor[y] and map.tiles.floor[y][x] then
+						local holdTile = map.tiles.floor[y][x]
+						if holdTile.drawable then
+							local drawQuad
+							local tileset = holdTile.tileset
+							if tileset and tileset.quads and tileset.quads and tileset.quads[tileset.ty] and tileset.quads[tileset.ty][tileset.tx] then drawQuad = tileset.quads[tileset.ty][tileset.tx] end
+							if pri == world.runPriority[1] then
+								if drawQuad then
+									ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
+								else
+									ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
 								end
 							end
 						end
-						-- Draw Wall Tiles
-						if map.tiles.wall[y] and map.tiles.wall[y][x] then
-							local holdTile = map.tiles.wall[y][x]
-							if holdTile.drawable then
-								local drawQuad
-								local tileset = holdTile.tileset
-								if tileset and tileset.quads and tileset.quads and tileset.quads[tileset.ty] and tileset.quads[tileset.ty][tileset.tx] then drawQuad = tileset.quads[tileset.ty][tileset.tx] end
-								if pri == world.runPriority[2] then
-									if drawQuad then
-										ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
-									else
-										ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
-									end
+					end
+					-- Draw Wall Tiles
+					if map.tiles.wall[y] and map.tiles.wall[y][x] then
+						local holdTile = map.tiles.wall[y][x]
+						if holdTile.drawable then
+							local drawQuad
+							local tileset = holdTile.tileset
+							if tileset and tileset.quads and tileset.quads and tileset.quads[tileset.ty] and tileset.quads[tileset.ty][tileset.tx] then drawQuad = tileset.quads[tileset.ty][tileset.tx] end
+							if pri == world.runPriority[2] then
+								if drawQuad then
+									ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
+								else
+									ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
 								end
 							end
 						end
-						-- Draw Roof Tiles
-						if map.tiles.roof[y] and map.tiles.roof[y][x] then
-							local holdTile = map.tiles.roof[y][x]
-							if holdTile.drawable then
-								local drawQuad
-								local tileset = holdTile.tileset
-								if tileset and tileset.quads and tileset.quads and tileset.quads[tileset.ty] and tileset.quads[tileset.ty][tileset.tx] then drawQuad = tileset.quads[tileset.ty][tileset.tx] end
-								if pri == world.runPriority[2] then
-									if drawQuad then
-										ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
-									else
-										ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
-									end
+					end
+					-- Draw Roof Tiles
+					if map.tiles.roof[y] and map.tiles.roof[y][x] then
+						local holdTile = map.tiles.roof[y][x]
+						if holdTile.drawable then
+							local drawQuad
+							local tileset = holdTile.tileset
+							if tileset and tileset.quads and tileset.quads and tileset.quads[tileset.ty] and tileset.quads[tileset.ty][tileset.tx] then drawQuad = tileset.quads[tileset.ty][tileset.tx] end
+							if pri == world.runPriority[2] then
+								if drawQuad then
+									ui.draw({image.getImage(holdTile.imageKey), drawQuad}, (x-1)*ts, (y-1)*ts, ts*tileset.x, ts*tileset.y)
+								else
+									ui.draw(image.getImage(holdTile.imageKey), (x-1)*ts, (y-1)*ts, ts, ts)
 								end
 							end
 						end
 					end
 				end
-			ui.pop()
+			end
 			if pri == world.runPriority[2] then
-				ui.push()
-					ui.setMode("screen")
+				ui.setMode("screen")
 					love.graphics.setShader(world.vignetteShader)
-						ui.draw(image.getImage("vignette"),0,0,main.width,main.height)
+					ui.draw(image.getImage("vignette"),0,0,camera.vWindow.w,camera.vWindow.h)
 					love.graphics.setShader()
-				ui.pop()
+				ui.setMode("world")
 			end
 		end
 	end
