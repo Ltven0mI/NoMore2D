@@ -175,11 +175,21 @@ function player:equipItem(i)
 		end
 		if i.itemType == "magazine" then
 			local holdItem = nil
-			if i.roundType == self.weapon.ammoType then
+			local weapon = self.weapon
+			local fits = false
+			if type(weapon.ammoType) == "table" then
+				for k, v in pairs(weapon.ammoType) do
+					if v == i.roundType then fits = true; break end
+				end
+			else
+				if i.roundType == weapon.ammoType then fits = true end
+			end
+			if fits then
 				if self.weapon.attach.mag ~= nil then self.inventory:addItem(self.weapon.attach.mag) end
 				self.weapon.attach.mag = i
 				self.inventory.heldItem = nil
 			end
+			if self.weapon.updateMag then self.weapon:updateMag() end
 		end
 		if i.itemType == "shells" then
 			local holdItem = nil
@@ -206,6 +216,7 @@ function player:equipItem(i)
 					self.inventory.heldItem = i
 				end
 			end
+			if self.weapon.updateMag then self.weapon:updateMag() end
 		end
 	else
 		debug.err("Incorrect call to function 'player:equipItem(i)'")
