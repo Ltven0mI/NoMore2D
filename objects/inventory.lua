@@ -8,10 +8,13 @@ inventory.pos = {x=0,y=0}
 inventory.slotSize = 30
 
 inventory.image = ""
+inventory.slotImage = "invslot"
 inventory.padding = {left=0,right=0,top=0,bot=0}
+inventory.mode = "screen"
 
 inventory.open = false
 inventory.heldItem = nil
+inventory.parent = nil
 
 -- Callbacks --
 function inventory:created(args)
@@ -20,24 +23,20 @@ function inventory:created(args)
 	else
 		self:create(1, 1)
 	end
-	self:setSlot(1, 1, 1)
-	self.pos.x = main.width/2-self.size.w*self.slotSize/2
-	self.pos.y = main.height/2-self.size.h*self.slotSize/2
+	if args[4] ~= nil and type(args[4]) == "table" then
+		self.parent = args[4]
+	end
+	self:addItem("m4a1", 3)
+	self:addItem("uzi", 3)
+	self:addItem("mag_nato", 5)
+	self:addItem("mag_uzi", 5)
 end
 
-function inventory:resize(w,h)
-	self.pos.x = w/2-self.size.w*self.slotSize/2
-	self.pos.y = h/2-self.size.h*self.slotSize/2
-end
-
-function inventory:draw()
+function inventory:drawscreen()
 	if self.open then
-		local mode = ui.getMode()
-		ui.setMode("world")
-		local mx, my = camera.getMouse()
+		local mx, my = camera.getMouse("screen")
 		if self.image ~= nil and self.image ~= "" then
 			local ix, iy, iw, ih = 0, 0, 0, 0
-			local co = camera.getModeOffset()
 			ix = self.pos.x-self.padding.left-co.x
 			iy = self.pos.y-self.padding.top-co.y
 			iw = self.size.w*self.slotSize+self.padding.left+self.padding.right
@@ -47,25 +46,27 @@ function inventory:draw()
 		local w, h = self.size.w, self.size.h
 		for y=1, h do
 			for x=1, w do
-				local co = camera.getModeOffset()
-				if ui.button(self.pos.x+(x*self.slotSize)-co.x, self.pos.y+(y*self.slotSize)-co.y, self.slotSize, self.slotSize) then
+				if ui.imageButton(image.getImage(self.slotImage), self.pos.x+(x-1)*self.slotSize, self.pos.y+(y-1)*self.slotSize, self.slotSize, self.slotSize) then
 					self:clickSlot(x, y)
 				end
 			end
 		end
 		for y=1, h do
 			for x=1, w do
-				local co = camera.getModeOffset()
 				local img = nil
 				local holdItem = nil
 				local holdSlot = nil
 				if self.slots[y] and self.slots[y][x] and self.slots[y][x].item then holdSlot = self.slots[y][x]; holdItem = holdSlot.item; img = image.getImage(holdItem.image) end
 				if img and holdSlot.orig then
-					ui.draw(img, self.pos.x+(x*self.slotSize)-co.x, self.pos.y+(y*self.slotSize)-co.y, holdItem.size.w*self.slotSize, holdItem.size.h*self.slotSize)
+					ui.draw(img, self.pos.x+(x-1)*self.slotSize, self.pos.y+(y-1)*self.slotSize, holdItem.size.w*self.slotSize, holdItem.size.h*self.slotSize)
 				end
 			end
 		end
-		ui.setMode(mode)
+		if self.heldItem ~= nil then
+			if self.heldItem.image then
+				ui.draw(image.getImage(self.heldItem.image), mx-self.slotSize/2, my-self.slotSize/2, self.heldItem.size.w*self.slotSize, self.heldItem.size.h*self.slotSize)
+			end
+		end
 	end
 end
 
@@ -90,7 +91,7 @@ end
 function inventory:clickSlot(x,y)
 	if x and y then
 		if self.heldItem then
-			self.heldItem = self:setSlot(x, y, self.heldItem)
+			self.heldItem = self:setItem(x, y, self.heldItem)
 		else
 			self.heldItem = self:removeItem(x, y)
 		end
@@ -108,6 +109,46 @@ function inventory:getItem(x,y)
 		end
 	else
 		debug.err("Incorrect call to function 'inventory:getItem(x,y)'")
+	end
+end
+
+function inventory:addItem(arg,count)
+	if arg then
+		local holdItem = nil
+		if type(arg) == "table" then holdItem = arg else holdItem = item.cloneItem(arg) end
+		if count == nil then count = 1 end
+		count = math.clamp(count, 1, math.huge)
+		if holdItem then
+			local addCount = 0
+			for y=1, self.size.h do
+				for x=1, self.size.w do
+					local holdSlot = nil
+					if self.slots and self.slots[y] and self.slots[y][x] then holdSlot = self.slots[y][x] end
+					if holdSlot then
+						if holdSlot.item == nil then
+							if x+holdItem.size.w-1 <= self.size.w and y+holdItem.size.h-1 <= self.size.h then
+								local fits = true
+								for yy=0, holdItem.size.h-1 do
+									for xx=0, holdItem.size.w-1 do
+										local holdTempSlot = nil
+										if self.slots and self.slots[y+yy] and self.slots[y+yy][x+xx] then holdTempSlot = self.slots[y+yy][x+xx] end
+										if holdTempSlot and holdTempSlot.item ~= nil then fits = false; break end
+									end
+									if not fits then break end
+								end
+								if fits then
+									self:setItem(x, y, holdItem)
+									addCount = addCount + 1
+									if addCount >= count then return end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	else
+		debug.err("Incorrect call to function 'inventory:addItem(arg,count)'")
 	end
 end
 
@@ -143,13 +184,13 @@ function inventory:removeItem(arg1,arg2)
 	end
 end
 
-function inventory:setSlot(x,y,key)
-	if x and y and key then
+function inventory:setItem(x,y,arg)
+	if x and y and arg then
 		local holdItem
-		if type(key) == "table" then
-			holdItem = key
+		if type(arg) == "table" then
+			holdItem = arg
 		else
-			holdItem = item.getItem(key)
+			holdItem = item.getItem(arg)
 		end
 		if holdItem then
 			local w1, h1 = holdItem.size.w, holdItem.size.h
@@ -200,7 +241,7 @@ function inventory:setSlot(x,y,key)
 						end
 					end
 				end
-				if removedItem ~= nil then debug.log("REMOVED ITEM"); return removedItem else if itemCount == 0 then debug.log("No Return"); return nil else debug.log("HoldItem"); return holdItem end end
+				if removedItem ~= nil then return removedItem else if itemCount == 0 then return nil else return holdItem end end
 			else
 				debug.log("[WARNING] Tried to place item outside of inventory")
 				return holdItem
@@ -209,7 +250,7 @@ function inventory:setSlot(x,y,key)
 			debug.log("[WARNING] No item with the key '"..key.."'")
 		end
 	else
-		debug.err("Incorrect call to function 'inventory:setSlot(x,y,key)'")
+		debug.err("Incorrect call to function 'inventory:setItem(x,y,arg)'")
 	end
 end
 
