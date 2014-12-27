@@ -2,7 +2,8 @@ loader = {}
 
 loader.sys = {}		--Loader Systems
 loader.sys.cb = {}		--Loader Callbacks
-loader.sys.cb.draw = {}
+loader.sys.cb.drawworld = {}
+loader.sys.cb.drawscreen = {}
 loader.sys.cb.errhand = {}
 loader.sys.cb.focus = {}
 loader.sys.cb.gamepadaxis = {}
@@ -40,8 +41,14 @@ loader.lib = {}		--Loader Libraries
 function loader.draw()
 	local i = 1
 	while i <= loader.highestPriority do
-		local sys = loader.sys.cb.draw[i]
-		if sys then loader.curPri = i; sys.draw(); i = i + 0.1 else i = math.floor(i) + 1 end
+		local sys = loader.sys.cb.drawworld[i]
+		if sys then loader.curPri = i; sys.drawworld(); i = i + 0.1 else i = math.floor(i) + 1 end
+	end
+
+	local ii = 1
+	while ii <= loader.highestPriority do
+		local sys = loader.sys.cb.drawscreen[ii]
+		if sys then loader.curPri = ii; sys.drawscreen(); ii = ii + 0.1 else ii = math.floor(ii) + 1 end
 	end
 end
 
@@ -332,7 +339,8 @@ function loader.filterSystems()
 				local key = sys.systemKey
 				if priority and key then
 					debug.start("loadersystems", "[LOADER] Registering callbacks for system '"..key.."'")
-					if sys.draw then loader.sys.cb.draw[priority] = sys; debug.log("[LOADER] |   Registered callback 'Draw'") end
+					if sys.drawworld then loader.sys.cb.drawworld[priority] = sys; debug.log("[LOADER] |   Registered callback 'DrawWorld'") end
+					if sys.drawscreen then loader.sys.cb.drawscreen[priority] = sys; debug.log("[LOADER] |   Registered callback 'DrawScreen'") end
 					if sys.errhand then loader.sys.cb.errhand[priority] = sys; debug.log("[LOADER] |   Registered callback 'ErrHand'") end
 					if sys.focus then loader.sys.cb.focus[priority] = sys; debug.log("[LOADER] |   Registered callback 'Focus'") end
 					if sys.gamepadaxis then loader.sys.cb.gamepadaxis[priority] = sys; debug.log("[LOADER] |   Registered callback 'GamepadAxis'") end
