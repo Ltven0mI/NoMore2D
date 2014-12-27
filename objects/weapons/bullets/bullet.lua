@@ -5,7 +5,7 @@ bullet.pos = {x=0,y=0}
 bullet.vel = {x=0,y=0}
 bullet.rot = 0
 bullet.size = {w=15,h=60}
-bullet.speed = 800
+bullet.speed = 1200
 bullet.life = 4
 bullet.curLife = 0
 
