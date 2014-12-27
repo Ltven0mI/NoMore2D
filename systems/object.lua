@@ -9,9 +9,15 @@ object.createdObjects = {}
 object.objCount = 0
 
 -- Callbacks --
-function object.draw()
+function object.drawworld()
 	for uid, obj in pairs(object.createdObjects) do
-		if obj.draw then obj:draw() end
+		if obj.drawworld then obj:drawworld() end
+	end
+end
+
+function object.drawscreen()
+	for uid, obj in pairs(object.createdObjects) do
+		if obj.drawscreen then obj:drawscreen() end
 	end
 end
 
