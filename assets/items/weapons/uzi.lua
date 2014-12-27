@@ -11,6 +11,6 @@ gun.fireSpeed = 10
 
 gun.attach = {}
 gun.attach.mag = nil
-gun.magType = "uzi"
+gun.ammoType = "uzi"
 
 return gun

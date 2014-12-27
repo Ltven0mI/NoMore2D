@@ -14,7 +14,9 @@ gun.fireSpeed = 10
 
 gun.attach = {}
 gun.attach.mag = nil
-gun.magType = "nato"
+gun.ammoType = "nato"
+
+gun.bulletObject = "bullet"
 
 -- Callbacks --
 function gun:attack()
@@ -35,14 +37,14 @@ function gun:setMag(arg)
 		else
 			holdMag = item.cloneItem(arg)
 		end
-		if holdMag and holdMag.roundType == self.magType then
+		if holdMag and holdMag.roundType == self.ammoType then
 			self.attach.mag = holdMag
 		end
 	end
 end
 
 function gun:shoot()
-	local holdBul = object.new("bullet")
+	local holdBul = object.new(self.bulletObject)
 	if self.parent then holdBul.rot = self.parent.rot end
 	if self.parent then holdBul.pos.x = self.parent.pos.x + self.parent.size/2 - holdBul.size.w/2 end
 	if self.parent then holdBul.pos.y = self.parent.pos.y + self.parent.size/2 - holdBul.size.h/2 end
