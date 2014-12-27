@@ -16,6 +16,10 @@ end
 -- Functions --
 function item.addItems()
 	item.addItem("gun")
+	item.addItem("m4a1")
+	item.addItem("uzi")
+	item.addItem("mag_nato")
+	item.addItem("mag_uzi")
 	debug.log("")
 end
 
@@ -42,7 +46,9 @@ function item.cloneItem(key)
 			if item.items[key] then
 				local holdItem = item.items[key]
 				local newItem = cloneTable(holdItem, {"function"})
-				setmetatable(newItem, { __index = holdItem })
+				local itemClass = nil
+				if holdItem.itemClass then if holdItem.itemClass == "self" then itemClass = holdItem else itemClass = item.getItem(holdItem.itemClass) end end
+				setmetatable(newItem, { __index = itemClass })
 				return newItem
 			else
 				debug.log("[WARNING] No item with key '"..key.."'")
@@ -50,7 +56,9 @@ function item.cloneItem(key)
 		elseif type(key) == "table" then
 			local holdItem = key
 			local newItem = cloneTable(holdItem, {"function"})
-			setmetatable(newItem, { __index = holdItem })
+			local itemClass = nil
+			if holdItem.itemClass then if holdItem.itemClass == "self" then itemClass = holdItem else itemClass = item.getItem(holdItem.itemClass) end end
+			setmetatable(newItem, { __index = itemClass })
 			return newItem
 		end
 	else
@@ -97,6 +105,8 @@ function item.getItems(dir,isrepeat,items)
 									holdItem.size.w = math.clamp(holdItem.size.w, 1, math.huge)
 									holdItem.size.h = math.clamp(holdItem.size.h, 1, math.huge)
 								end
+								if holdItem.itemType == nil then holdItem.itemType = "misc" end
+								if holdItem.itemClass == nil then holdItem.itemClass = "self" end
 								if holdItem.ignore == nil then holdItem.ignore = {} end
 								items[key] = holdItem
 								debug.log("[ITEM] Added item '"..key.."' from directory '"..dir.."' to unsorted list")
