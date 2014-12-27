@@ -1,6 +1,6 @@
 state = {}
 state.systemKey = "state"
-state.runPriority = 18
+state.runPriority = 19
 
 -- Variables --
 state.states = {}
@@ -8,8 +8,12 @@ state.currentState = nil
 state.startState = "menu"
 
 -- Callbacks --
-function state.draw()
-	if state.currentState and state.currentState.draw then state.currentState.draw() end
+function state.drawworld()
+	if state.currentState and state.currentState.drawworld then state.currentState.drawworld() end
+end
+
+function state.drawscreen()
+	if state.currentState and state.currentState.drawscreen then state.currentState.drawscreen() end
 end
 
 function state.errhand(msg)
