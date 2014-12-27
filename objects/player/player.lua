@@ -80,8 +80,12 @@ function player:update(dt)
 
 	camera.centerPos(math.round(self.pos.x+self.size/2), math.round(self.pos.y+self.size/2))
 
-	if self.inventory and not self.inventory.open and love.mouse.isDown(input.fire) then
-		if self.weapon and self.weapon.attack then self.weapon:attack() end
+	if self.inventory and not self.inventory.open then
+		if self.weapon then
+			if love.mouse.isDown(input.fire) and self.weapon.attack then self.weapon:attack() end
+			if love.mouse.onDown(input.fire) and self.weapon.onAttack then self.weapon:onAttack() end
+			if self.weapon.update then self.weapon:update(dt) end
+		end
 	end
 	if self.inventory and self.inventory.heldItem then
 		if love.mouse.onDown("l") then
@@ -171,10 +175,36 @@ function player:equipItem(i)
 		end
 		if i.itemType == "magazine" then
 			local holdItem = nil
-			if i.roundType == self.weapon.magType then
+			if i.roundType == self.weapon.ammoType then
 				if self.weapon.attach.mag ~= nil then self.inventory:addItem(self.weapon.attach.mag) end
 				self.weapon.attach.mag = i
 				self.inventory.heldItem = nil
+			end
+		end
+		if i.itemType == "shells" then
+			local holdItem = nil
+			local fits = false
+			local weapon = self.weapon
+			if (weapon.shell and weapon.shell.shellType == i.shellType) or weapon.shell == nil or weapon.shells <= 0 then
+				if type(weapon.ammoType) == "table" then
+					for k, v in pairs(weapon.ammoType) do
+						if v == i.shellType then fits = true; break end
+					end
+				else
+					if i.shellType == weapon.ammoType then fits = true end
+				end
+				if fits then
+					if weapon.shells + i.shells > weapon.maxShells then
+						weapon.shell = item.getItem(i.id)
+						i.shells = i.shells - (weapon.maxShells-weapon.shells)
+						weapon.shells = weapon.maxShells
+					elseif weapon.shells + i.shells <= weapon.maxShells then
+						weapon.shell = item.getItem(i.id)
+						weapon.shells = weapon.shells + i.shells
+						i = nil
+					end
+					self.inventory.heldItem = i
+				end
 			end
 		end
 	else

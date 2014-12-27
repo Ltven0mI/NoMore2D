@@ -26,10 +26,13 @@ function inventory:created(args)
 	if args[4] ~= nil and type(args[4]) == "table" then
 		self.parent = args[4]
 	end
-	self:addItem("m4a1", 3)
-	self:addItem("uzi", 3)
+	self:addItem("m4a1", 1)
+	self:addItem("uzi", 1)
 	self:addItem("mag_nato", 5)
 	self:addItem("mag_uzi", 5)
+	self:addItem("spas", 1)
+	self:addItem("shells_buckshot", 1)
+	self:addItem("shells_slug", 1)
 end
 
 function inventory:drawscreen()
