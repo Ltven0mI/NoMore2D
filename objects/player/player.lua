@@ -28,10 +28,13 @@ end
 
 function player:update(dt)
 	self.vel.x, self.vel.y = 0, 0
-	if love.keyboard.isDown("w") and not love.keyboard.isDown("s") then self.vel.y = -self.speed end
-	if love.keyboard.isDown("s") and not love.keyboard.isDown("w") then self.vel.y = self.speed end
-	if love.keyboard.isDown("a") and not love.keyboard.isDown("d") then self.vel.x = -self.speed end
-	if love.keyboard.isDown("d") and not love.keyboard.isDown("a") then self.vel.x = self.speed end
+
+	if self.inventory and not self.inventory.open then
+		if love.keyboard.isDown("w") and not love.keyboard.isDown("s") then self.vel.y = -self.speed end
+		if love.keyboard.isDown("s") and not love.keyboard.isDown("w") then self.vel.y = self.speed end
+		if love.keyboard.isDown("a") and not love.keyboard.isDown("d") then self.vel.x = -self.speed end
+		if love.keyboard.isDown("d") and not love.keyboard.isDown("a") then self.vel.x = self.speed end
+	end
 
 	local vx, vy = math.norm(self.vel.x, self.vel.y)
 	self.vel.x, self.vel.y = vx*self.vel.x, vy*self.vel.y
@@ -44,10 +47,12 @@ function player:update(dt)
 		if self.vel.y > 0 then self.rot = 180 elseif self.vel.y < 0 then self.rot = 0 end
 	end
 
-	local mx, my = camera.getMouse("world")
-	if love.mouse.isDown("l") or love.mouse.isDown("r") or love.mouse.isDown("m") then self.rot = (math.atan2((my-(self.pos.y+self.size/2)), (mx-(self.pos.x+self.size/2)))*180/math.pi)+90 end
-	if self.rot < 0 then self.rot = 270+(self.rot+90) end
-	self.rot = (math.floor((self.rot+22.5)/45))*45
+	if self.inventory and not self.inventory.open then
+		local mx, my = camera.getMouse("world")
+		if love.mouse.isDown("l") or love.mouse.isDown("r") or love.mouse.isDown("m") then self.rot = (math.atan2((my-(self.pos.y+self.size/2)), (mx-(self.pos.x+self.size/2)))*180/math.pi)+90 end
+		if self.rot < 0 then self.rot = 270+(self.rot+90) end
+		self.rot = (math.floor((self.rot+22.5)/45))*45
+	end
 
 	if self.rot > -22.5 and self.rot < 22.5 then self.facing = "up" end
 	if self.rot > 22.5 and self.rot < 67.5 then self.facing = "upright" end
@@ -75,7 +80,7 @@ function player:update(dt)
 
 	camera.centerPos(math.round(self.pos.x+self.size/2), math.round(self.pos.y+self.size/2))
 
-	if love.mouse.isDown(input.fire) then
+	if self.inventory and not self.inventory.open and love.mouse.isDown(input.fire) then
 		if self.weapon and self.weapon.attack then self.weapon:attack() end
 	end
 	if self.inventory and self.inventory.heldItem then
