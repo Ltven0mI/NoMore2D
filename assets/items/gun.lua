@@ -46,6 +46,8 @@ function gun:shoot()
 	if self.parent then holdBul.rot = self.parent.rot end
 	if self.parent then holdBul.pos.x = self.parent.pos.x + self.parent.size/2 - holdBul.size.w/2 end
 	if self.parent then holdBul.pos.y = self.parent.pos.y + self.parent.size/2 - holdBul.size.h/2 end
+	if self.parent then holdBul.vel.x = self.parent.vel.x end
+	if self.parent then holdBul.vel.y = self.parent.vel.y end
 	if self.attach and self.attach.mag then self.attach.mag.rounds = self.attach.mag.rounds - 1 end
 end
 
