@@ -32,7 +32,7 @@ function ui.mouseOver(x,y,w,h)
 	if x and y and w and h then
 		local mx, my
 		if camera then mx, my = camera.getMouse() else mx, my = love.mouse.getPosition() end
-		if mx>x and mx<x+w and my>y and my<y+h then return true else return false end
+		if mx>=x and mx<=x+w and my>=y and my<=y+h then return true else return false end
 	else
 		debug.err("Incorrect call to function 'ui.mouseOver(x,y,w,h)'")
 	end
