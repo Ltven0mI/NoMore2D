@@ -5,7 +5,7 @@ camera.runPriority = 3
 -- Variables --
 camera.var = {}
 camera.var.pos = {x=0,y=0}
-camera.var.scale = 0.5
+camera.var.scale = 1
 camera.var.rot = 0
 camera.var.mode = "world"
 camera.var.modeOffset = {x=0, y=0}
@@ -14,21 +14,30 @@ camera.var.scaleOffset = {x=0,y=0}
 camera.pushpop = {}
 
 camera.window = {w=0,h=0}
+camera.vWindow = {w=0,h=0}
 camera.pushCount = 0
 
 -- Callbacks --
 function camera.load(args)
-	camera.window.w = main.w
-	camera.window.h = main.h
 	camera.var.scale = (main.width+main.height)/1750
+	camera.window = {w=main.width,h=main.height}
+	camera.vWindow = {w=main.width/camera.var.scale,h=main.height/camera.var.scale}
 end
 
-function camera.draw()
-	camera.updateSettings()
+function camera.drawworld()
+	camera.setMode("world")
+	ui.setMode("world")
+end
+
+function camera.drawscreen()
+	camera.setMode("screen")
+	ui.setMode("screen")
 end
 
 function camera.resize(w,h)
 	camera.var.scale = (main.width+main.height)/1750
+	camera.window = {w=w,h=h}
+	camera.vWindow = {w=w/camera.var.scale,h=h/camera.var.scale}
 end
 
 -- Function --
@@ -68,8 +77,13 @@ function camera.getRot()
 	return camera.var.rot
 end
 
-function camera.getModeOffset()
-	return camera.var.modeOffset
+function camera.getModeOffset(mode)
+	if mode == nil then mode = camera.var.mode end
+	if mode == "world" then
+		return {x=-camera.var.pos.x, y=-camera.var.pos.y}
+	else
+		return {x=0, y=0}
+	end
 end
 
 function camera.setMode(mode)
@@ -93,9 +107,14 @@ function camera.getScale()
 	return camera.var.scale
 end
 
-function camera.getMouse()
+function camera.getMouse(mode)
 	local mx, my = love.mouse.getPosition()
-	if camera.var.mode == "world" then return math.round((mx+camera.var.pos.x*camera.var.scale)/camera.var.scale), math.round((my+camera.var.pos.y*camera.var.scale)/camera.var.scale) elseif camera.var.mode == "screen" then return mx, my end
+	if mode == nil then mode = camera.var.mode end
+	if mode == "world" then
+		return math.round((mx+camera.var.pos.x*camera.var.scale)/camera.var.scale), math.round((my+camera.var.pos.y*camera.var.scale)/camera.var.scale)
+	elseif mode == "screen" then
+		return math.round(mx/camera.var.scale), math.round(my/camera.var.scale)
+	end
 end
 
 function camera.push()
@@ -128,6 +147,8 @@ function camera.updateSettings()
 		love.graphics.translate(-camera.var.pos.x, -camera.var.pos.y)
 		camera.var.modeOffset.x, camera.var.modeOffset.y = -camera.var.pos.x, -camera.var.pos.y
 	else
+		local scale = camera.var.scale
+		love.graphics.scale(scale)
 		love.graphics.translate(0, 0)
 		camera.var.modeOffset.x, camera.var.modeOffset.y = 0, 0
 	end
