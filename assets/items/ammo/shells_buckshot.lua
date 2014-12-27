@@ -8,8 +8,9 @@ shells.itemType = "shells"
 -- Variables --
 shells.shellType = "buckshot"
 shells.shells = 12
+shells.object = "pallett"
 
 shells.pallets = 10
-shells.spread = 20
+shells.spread = 10
 
 return shells

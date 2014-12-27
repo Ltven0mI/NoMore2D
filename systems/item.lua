@@ -20,8 +20,12 @@ function item.addItems()
 	item.addItem("spas")
 	item.addItem("m4a1")
 	item.addItem("uzi")
+	item.addItem("ak47")
+	item.addItem("lmg")
 	item.addItem("mag_nato")
 	item.addItem("mag_uzi")
+	item.addItem("box_flame")
+	item.addItem("box_nato")
 	item.addItem("shells_buckshot")
 	item.addItem("shells_slug")
 	debug.log("")
@@ -49,7 +53,7 @@ function item.cloneItem(key)
 		if type(key) == "number" or type(key) == "string" then
 			if item.items[key] then
 				local holdItem = item.items[key]
-				local newItem = cloneTable(holdItem, {"function"})
+				local newItem = cloneTable(holdItem)
 				local itemClass = nil
 				if holdItem.itemClass then if holdItem.itemClass == "self" then itemClass = holdItem else itemClass = item.getItem(holdItem.itemClass) end end
 				if itemClass == nil then itemClass = holdItem end
@@ -60,7 +64,7 @@ function item.cloneItem(key)
 			end
 		elseif type(key) == "table" then
 			local holdItem = key
-			local newItem = cloneTable(holdItem, {"function"})
+			local newItem = cloneTable(holdItem)
 			local itemClass = nil
 			if holdItem.itemClass then if holdItem.itemClass == "self" then itemClass = holdItem else itemClass = item.getItem(holdItem.itemClass) end end
 			if itemClass == nil then itemClass = holdItem end

@@ -9,5 +9,6 @@ mag.itemType = "magazine"
 mag.roundType = "nato"
 mag.rounds = 30
 mag.maxRounds = 30
+mag.object = "bullet"
 
 return mag

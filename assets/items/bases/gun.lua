@@ -16,8 +16,6 @@ gun.attach = {}
 gun.attach.mag = nil
 gun.ammoType = "nato"
 
-gun.bulletObject = "bullet"
-
 -- Callbacks --
 function gun:attack()
 	local dt = love.timer.getDelta()
@@ -44,7 +42,7 @@ function gun:setMag(arg)
 end
 
 function gun:shoot()
-	local holdBul = object.new(self.bulletObject)
+	local holdBul = object.new(self.attach.mag.object)
 	if self.parent then holdBul.rot = self.parent.rot end
 	if self.parent then holdBul.pos.x = self.parent.pos.x + self.parent.size/2 - holdBul.size.w/2 end
 	if self.parent then holdBul.pos.y = self.parent.pos.y + self.parent.size/2 - holdBul.size.h/2 end
