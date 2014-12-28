@@ -179,7 +179,7 @@ function player:equipItem(i)
 			local fits = false
 			if type(weapon.ammoType) == "table" then
 				for k, v in pairs(weapon.ammoType) do
-					if v == i.roundType then fits = true; break end
+					if k == i.roundType then fits = true; break end
 				end
 			else
 				if i.roundType == weapon.ammoType then fits = true end

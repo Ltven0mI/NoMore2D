@@ -1,7 +1,7 @@
 local gun = {}
 gun.name = "gun"
 gun.desc = "Gun Template"
-gun.image = "gun"
+gun.image = "gun_empty"
 gun.size = {w=2,h=2}
 gun.itemType = "weapon"
 gun.itemClass = "self"
@@ -14,7 +14,7 @@ gun.fireSpeed = 10
 
 gun.attach = {}
 gun.attach.mag = nil
-gun.ammoType = "nato"
+gun.ammoType = {["nato"]="gun_nato",[""]="gun_empty"}
 
 -- Callbacks --
 function gun:attack()
@@ -27,16 +27,16 @@ function gun:attack()
 end
 
 -- Functions --
-function gun:setMag(arg)
-	if arg then
-		local holdMag = nil
-		if type(arg) == "table" then
-			holdMag = arg
-		else
-			holdMag = item.cloneItem(arg)
+function gun:updateMag()
+	if self.attach then
+		local ammoType = ""
+		if self.attach and self.attach.mag then
+			ammoType = self.attach.mag.roundType
 		end
-		if holdMag and holdMag.roundType == self.ammoType then
-			self.attach.mag = holdMag
+		if self.ammoType[ammoType] then
+			self.image = self.ammoType[ammoType]
+		else
+			self.image = ""
 		end
 	end
 end
