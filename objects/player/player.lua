@@ -51,7 +51,7 @@ function player:update(dt)
 		local mx, my = camera.getMouse("world")
 		if love.mouse.isDown("l") or love.mouse.isDown("r") or love.mouse.isDown("m") then self.rot = (math.atan2((my-(self.pos.y+self.size/2)), (mx-(self.pos.x+self.size/2)))*180/math.pi)+90 end
 		if self.rot < 0 then self.rot = 270+(self.rot+90) end
-		self.rot = (math.floor((self.rot+22.5)/45))*45
+		--self.rot = (math.floor((self.rot+22.5)/45))*45
 	end
 
 	if self.rot > -22.5 and self.rot < 22.5 then self.facing = "up" end
