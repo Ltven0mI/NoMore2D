@@ -14,7 +14,6 @@ inventory.mode = "screen"
 
 inventory.open = false
 inventory.heldItem = nil
-inventory.parent = nil
 
 -- Callbacks --
 function inventory:created(args)
@@ -23,8 +22,9 @@ function inventory:created(args)
 	else
 		self:create(1, 1)
 	end
-	if args[4] ~= nil and type(args[4]) == "table" then
-		self.parent = args[4]
+	if args[4] ~= nil and args[5] ~= nil then
+		self.pos.x = args[4]
+		self.pos.y = args[5]
 	end
 	self:addItem("m4a1", 1)
 	self:addItem("uzi", 1)
@@ -69,9 +69,10 @@ function inventory:drawscreen()
 				end
 			end
 		end
-		if self.heldItem ~= nil then
-			if self.heldItem.image then
-				ui.draw(image.getImage(self.heldItem.image), mx-self.slotSize/2, my-self.slotSize/2, self.heldItem.size.w*self.slotSize, self.heldItem.size.h*self.slotSize)
+		local heldItem = self:getHeldItem()
+		if heldItem ~= nil then
+			if heldItem.image then
+				ui.draw(image.getImage(heldItem.image), mx-self.slotSize/2, my-self.slotSize/2, heldItem.size.w*self.slotSize, heldItem.size.h*self.slotSize)
 			end
 		end
 	end
@@ -97,10 +98,11 @@ end
 
 function inventory:clickSlot(x,y)
 	if x and y then
-		if self.heldItem then
-			self.heldItem = self:setItem(x, y, self.heldItem)
+		local heldItem = self:getHeldItem()
+		if heldItem then
+			self:setHeldItem(self:setItem(x, y, heldItem))
 		else
-			self.heldItem = self:removeItem(x, y)
+			self:setHeldItem(self:removeItem(x, y))
 		end
 	else
 		debug.error("Incorrect call to function 'inventory:clickSlot(x,y)'")
@@ -259,6 +261,16 @@ function inventory:setItem(x,y,arg)
 	else
 		debug.err("Incorrect call to function 'inventory:setItem(x,y,arg)'")
 	end
+end
+
+function inventory:setHeldItem(arg)
+	if inventory == nil then inventory = {} end
+	inventory.heldItem = arg
+end
+
+function inventory:getHeldItem()
+	if inventory == nil then inventory = {} end
+	return inventory.heldItem
 end
 
 return inventory

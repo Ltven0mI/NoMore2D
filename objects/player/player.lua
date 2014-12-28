@@ -19,7 +19,7 @@ player.inventory = nil
 
 -- Callbacks --
 function player:created()
-	self.inventory = object.new("inventory", 10, 10)
+	self.inventory = object.new("inventory", 30, 10)
 end
 
 function player:onDestroy()
@@ -87,11 +87,14 @@ function player:update(dt)
 			if self.weapon.update then self.weapon:update(dt) end
 		end
 	end
-	if self.inventory and self.inventory.heldItem then
-		if love.mouse.onDown("l") then
-			local mx, my = camera.getMouse("world")
-			if math.contains(self.pos.x, self.pos.y, self.size, self.size, mx, my, 1, 1) then
-				self:equipItem(self.inventory.heldItem)
+	if self.inventory then
+		local heldItem = self.inventory:getHeldItem()
+		if heldItem then
+			if love.mouse.onDown("l") then
+				local mx, my = camera.getMouse("world")
+				if math.contains(self.pos.x, self.pos.y, self.size, self.size, mx, my, 1, 1) then
+					self.inventory:setHeldItem(self:equipItem(heldItem))
+				end
 			end
 		end
 	end
@@ -113,6 +116,16 @@ end
 
 function player:drawworld()
 	ui.draw(image.getImage("player_01"), math.round(self.pos.x), math.round(self.pos.y), self.size, self.size, self.curRot)
+end
+
+function player:drawscreen()
+	if self.weapon then
+		if ui.imageButton(image.getImage(self.weapon.image), camera.vWindow.w-100, camera.vWindow.h-100, 100, 100) and self.inventory.open then
+			self.weapon.parent = nil
+			self.inventory:addItem(self.weapon)
+			self.weapon = nil
+		end
+	end
 end
 
 function player:keypressed(key)
@@ -171,9 +184,9 @@ function player:equipItem(i)
 			if self.weapon ~= nil then self.weapon.parent = nil; self.inventory:addItem(self.weapon) end
 			self.weapon = i
 			self.weapon.parent = self
-			self.inventory.heldItem = nil
+			return nil
 		end
-		if i.itemType == "magazine" then
+		if i.itemType == "magazine" and self.weapon then
 			local holdItem = nil
 			local weapon = self.weapon
 			local fits = false
@@ -187,18 +200,18 @@ function player:equipItem(i)
 			if fits then
 				if self.weapon.attach.mag ~= nil then self.inventory:addItem(self.weapon.attach.mag) end
 				self.weapon.attach.mag = i
-				self.inventory.heldItem = nil
+				if self.weapon.updateMag then self.weapon:updateMag() end
+				return nil
 			end
-			if self.weapon.updateMag then self.weapon:updateMag() end
 		end
-		if i.itemType == "shells" then
+		if i.itemType == "shells" and self.weapon then
 			local holdItem = nil
 			local fits = false
 			local weapon = self.weapon
 			if (weapon.shell and weapon.shell.shellType == i.shellType) or weapon.shell == nil or weapon.shells <= 0 then
 				if type(weapon.ammoType) == "table" then
 					for k, v in pairs(weapon.ammoType) do
-						if v == i.shellType then fits = true; break end
+						if k == i.shellType then fits = true; break end
 					end
 				else
 					if i.shellType == weapon.ammoType then fits = true end
@@ -213,11 +226,12 @@ function player:equipItem(i)
 						weapon.shells = weapon.shells + i.shells
 						i = nil
 					end
-					self.inventory.heldItem = i
+					if self.weapon.updateShell then self.weapon:updateShell() end
+					return i
 				end
 			end
-			if self.weapon.updateMag then self.weapon:updateMag() end
 		end
+		return i
 	else
 		debug.err("Incorrect call to function 'player:equipItem(i)'")
 	end

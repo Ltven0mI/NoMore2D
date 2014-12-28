@@ -1,7 +1,7 @@
 local shotgun = {}
 shotgun.name = "shotgun"
 shotgun.desc = "Shotgun Template"
-shotgun.image = ""
+shotgun.image = "shotgun_empty"
 shotgun.size = {w=3,h=3}
 shotgun.itemType = "weapon"
 shotgun.itemClass = "self"
@@ -16,7 +16,7 @@ shotgun.attach = {}
 shotgun.shell = nil
 shotgun.shells = 0
 shotgun.maxShells = 5
-shotgun.ammoType = {"slug","buckshot"}
+shotgun.ammoType = {["slug"]="shotgun_slug",["buckshot"]="shotgun_buckshot",[""]="shotgun_empty"}
 
 -- Callbacks --
 function shotgun:onAttack()
@@ -31,6 +31,18 @@ function shotgun:update(dt)
 end
 
 -- Functions --
+function shotgun:updateShell()
+	if self.shell then
+		local ammoType = ""
+		ammoType = self.shell.shellType
+		if self.ammoType[ammoType] then
+			self.image = self.ammoType[ammoType]
+		else
+			self.image = ""
+		end
+	end
+end
+
 function shotgun:shoot()
 	for i=1, self.shell.pallets do
 		local holdBul = object.new(self.shell.object)
