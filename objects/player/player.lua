@@ -120,11 +120,6 @@ end
 
 function player:drawscreen()
 	if self.weapon then
-		if ui.imageButton(image.getImage(self.weapon.image), camera.vWindow.w-100, camera.vWindow.h-100, 100, 100) and self.inventory.open then
-			self.weapon.parent = nil
-			self.inventory:addItem(self.weapon)
-			self.weapon = nil
-		end
 		local amo = 0
 		local max = 0
 		if self.weapon.attach and self.weapon.attach.mag then
@@ -135,6 +130,11 @@ function player:drawscreen()
 			amo = self.weapon.shells
 			max = self.weapon.maxShells
 			love.graphics.print(amo.."/"..max, camera.vWindow.w-100, camera.vWindow.h-150)
+		end
+		if ui.imageButton(image.getImage(self.weapon.image), camera.vWindow.w-100, camera.vWindow.h-100, 100, 100) and self.inventory.open then
+			self.weapon.parent = nil
+			self.inventory:addItem(self.weapon)
+			self.weapon = nil
 		end
 	end
 end
