@@ -13,6 +13,6 @@ shotgun.attach = {}
 shotgun.shell = nil
 shotgun.shells = 0
 shotgun.maxShells = 6
-shotgun.ammoType = {"buckshot","slug"}
+shotgun.ammoType = {["slug"]="spas_metal",["buckshot"]="spas_metal",[""]="spas_metal"}
 
 return shotgun
