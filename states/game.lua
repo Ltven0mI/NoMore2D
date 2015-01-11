@@ -5,8 +5,9 @@ game.player = nil
 
 -- Callbacks --
 function game.stateOpen()
-	world.genWorld(10,10)
+	world.loadMap("level_01")
 	game.player = object.new("player")
+	--object.new("light", 50, 50, 150)
 end
 function game.stateClose()
 	world.clearMap()
@@ -20,6 +21,9 @@ function game.drawscreen()
 	if main.debugMode then
 		love.graphics.print(love.timer.getFPS(), 0, 0)
 	end
+
+	local mx, my = camera.getMouse("screen")
+	--debug.log(math.raycast(camera.vWindow.w, camera.vWindow.h, mx, my, camera.vWindow.w, 0, 0, camera.vWindow.h))
 end
 
 function game.keypressed(key)
