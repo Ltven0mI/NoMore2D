@@ -8,7 +8,7 @@ shells.itemType = "shells"
 -- Variables --
 shells.shellType = "buckshot"
 shells.shells = 12
-shells.object = "pallett"
+shells.object = "buckshot"
 
 shells.pallets = 10
 shells.spread = 10

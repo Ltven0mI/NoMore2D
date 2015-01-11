@@ -47,8 +47,8 @@ function shotgun:shoot()
 	for i=1, self.shell.pallets do
 		local holdBul = object.new(self.shell.object)
 		if self.parent then holdBul.rot = self.parent.rot + math.random(-self.shell.spread, self.shell.spread) end
-		if self.parent then holdBul.pos.x = self.parent.pos.x + self.parent.size/2 - holdBul.size.w/2 end
-		if self.parent then holdBul.pos.y = self.parent.pos.y + self.parent.size/2 - holdBul.size.h/2 end
+		if self.parent then holdBul.pos.x = self.parent.pos.x + self.parent.size/2 end
+		if self.parent then holdBul.pos.y = self.parent.pos.y + self.parent.size/2 end
 		if self.parent then holdBul.vel.x = self.parent.vel.x end
 		if self.parent then holdBul.vel.y = self.parent.vel.y end
 	end

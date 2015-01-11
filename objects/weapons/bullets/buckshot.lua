@@ -1,14 +1,14 @@
 local bullet = {}
-bullet.name = "bullet"
+bullet.name = "buckshot"
 
 bullet.pos = {x=0,y=0}
 bullet.vel = {x=0,y=0}
 bullet.rot = 0
 bullet.size = {w=15,h=60}
 bullet.speed = 1200
-bullet.life = 4
+bullet.life = 1
 bullet.curLife = 0
-bullet.damage = 3
+bullet.damage = 2
 
 bullet.doDestroy = false
 
@@ -22,7 +22,7 @@ function bullet:update(dt)
 	self.pos.x = self.pos.x + (self.vel.x+velx)*dt
 	self.pos.y = self.pos.y + (self.vel.y+vely)*dt
 	self.curLife = self.curLife + dt
-	if self.curLife >= self.life then self:destroy() end
+	if self.curLife >= self.life then object.destroyObject(self) end
 end
 
 function bullet:drawworld()
