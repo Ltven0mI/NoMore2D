@@ -28,9 +28,10 @@ function tile.cloneTile(key)
 				debug.log("[WARNING] No tile with key '"..key.."'")
 			end
 		elseif type(key) == "table" then
+			local indexTile = tile.getTile(key.id)
 			local holdTile = key
 			local newTile = cloneTable(holdTile, {"function"})
-			setmetatable(newTile, { __index = holdTile })
+			setmetatable(newTile, { __index = indexTile })
 			return newTile
 		end
 	else
