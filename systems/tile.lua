@@ -62,6 +62,7 @@ function tile.addTiles()
 	tile.addTile("door_wood")
 	tile.addTile("cog_spin")
 	tile.addTile("grass_dirt_01")
+	tile.addTile("brick_top")
 	debug.log("")
 end
 
