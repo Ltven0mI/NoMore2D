@@ -195,4 +195,132 @@ function math.contains(x1,y1,w1,h1,x2,y2,w2,h2)
 	end
 end
 
+function math.onSegment(px,py,qx,qy,rx,ry)
+	if qx <= math.max(px, rx) and qx >= math.min(px, rx) and qy <= math.max(py, ry) and qy >= math.min(py, ry) then return true else return false end
+end
+
+function math.orientation(px,py,qx,qy,rx,ry)
+	local val = (qy-py)*(rx-qx)-(qx-px)*(ry-qy)
+    if val==0 then return 0 end
+    if val>0 then return 1 else return 2 end
+end
+
+function math.intersect(px1,py1,qx1,qy1,px2,py2,qx2,qy2)
+	local o1 = math.orientation(px1, py1, qx1, qy1, px2, py2);
+	local o2 = math.orientation(px1, py1, qx1, qy1, qx2, qy2);
+	local o3 = math.orientation(px2, py2, qx2, qy2, px1, py1);
+	local o4 = math.orientation(px2, py2, qx2, qy2, qx1, qy1);
+
+	--love.graphics.setColor(0,0,255,255)
+	--love.graphics.line(px1, py1, qx1, qy1)
+	--love.graphics.line(px2, py2, qx2, qy2)
+	
+	if o1 ~= o2 and o3 ~= o4 then return true end
+	
+	if o1 == 0 and math.onSegment(px1, py1, px2, py2, qx1, qy1) then return true end
+	
+	if o2 == 0 and math.onSegment(px1, py1, qx2, qy2, qx1, qy1) then return true end
+	
+	if o3 == 0 and math.onSegment(px2, py2, px1, py1, qx2, qy2) then return true end
+	
+	if o4 == 0 and math.onSegment(px2, py2, qx1, qy1, qx2, qy2) then return true end
+	
+	return false
+end
+
+function math.raycast(px1,py1,qx1,qy1,px2,py2,qx2,qy2)
+	--[[local reverse = false
+	local xmod, ymod = 1, 1
+	local x0, y0, x1, y1 = px1, py1, qx1, qy1
+	if y0 > x0 or y1 > x1 then
+		reverse = true
+		x0 = py1
+		y0 = px1
+		x1 = qy1
+		y1 = qx1
+	end
+	local dx = x1-x0
+	local dy = y1-y0
+
+	local D = 2*dy - dx
+	love.graphics.setColor(0,0,255,255)
+	love.graphics.line(px2, py2, qx2, qy2)
+	--if not reverse then return math.intersect() else debug.log(y0, x0) end
+	local y = y0
+
+	for x=x0+1, x1 do
+		if D > 0 then
+			y = y+1
+			if not reverse then
+				if math.intersect(px1, py1, x*xmox, y*ymox, px2, py2, qx2, qy2) then
+					love.graphics.setColor(255,0,0,255); love.graphics.line(px1, py1, x*xmox, y*ymox)
+					return true, x, y
+				end
+			else
+				if math.intersect(px1, py1, y*ymod, x*xmod, px2, py2, qx2, qy2) then
+					love.graphics.setColor(255,0,0,255); love.graphics.line(px1, py1, y*ymod, x*xmod)
+					return true, y, x
+				end
+			end
+			D = D + (2*dy-2*dx)
+		else
+			if not reverse then
+				if math.intersect(px1, py1, x*xmox, y*ymox, px2, py2, qx2, qy2) then
+					love.graphics.setColor(255,0,0,255); love.graphics.line(px1, py1, x*xmox, y*ymox)
+					return true, x, y
+				end
+			else
+				if math.intersect(px1, py1, y*ymod, x*xmod, px2, py2, qx2, qy2) then
+					love.graphics.setColor(255,0,0,255); love.graphics.line(px1, py1, y*ymod, x*xmod)
+					return true, y, x
+				end
+			end
+			D = D + (2*dy)
+		end
+	end
+	--love.graphics.setColor(0,255,0,255); love.graphics.line(px1, py1, qx1, qy1)
+	return false]]
+	local x1, y1, x2, y2 = px1, py1, qx1, qy1
+
+	local w = x2 - x1
+	local h = y2 - y1
+	local dx1, dy1, dx2, dy2 = 0, 0, 0, 0
+	if w<0 then dx1 = -1 elseif w>0 then dx1 = 1 end
+	if h<0 then dy1 = -1 elseif h>0 then dy1 = 1 end
+	if w<0 then dx2 = -1 elseif w>0 then dx2 = 1 end
+	local longest = math.abs(w)
+	local shortest = math.abs(h)
+	if not (longest>shortest) then
+		longest = math.abs(h)
+		shortest = math.abs(w)
+		if h<0 then dy2 = -1 elseif h>0 then dy2 = 1 end
+		dx2 = 0            
+	end
+	local numerator = bit.rshift(longest, 1)
+
+	--love.graphics.setColor(0,0,255,255)
+	--love.graphics.line(px2, py2, qx2, qy2)
+	--love.graphics.setColor(0,255,0,255); love.graphics.line(qx1, qy1, px1, py1)
+	--love.graphics.setColor(0,0,255,255); love.graphics.circle("fill", px1, py1, 3)
+
+	for i=1, longest do
+		--putpixel(x,y,color) ;
+		if math.intersect(px1, py1, x1, y1, px2, py2, qx2, qy2) then
+			--love.graphics.setColor(255,0,0,255); love.graphics.line(px1, py1, x1, y1)
+			--love.graphics.setColor(255, 0, 0, 255); love.graphics.circle("fill", x1, y1, 3)
+			return true, x1, y1
+		end
+		numerator = numerator + shortest
+		if not (numerator<longest) then
+			numerator = numerator - longest
+			x1 = x1 + dx1
+			y1 = y1 + dy1
+		else
+			x1 = x1 + dx2
+			y1 = y1 + dy2
+		end
+	end
+	return false
+end
+
 return wLib

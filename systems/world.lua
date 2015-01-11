@@ -416,4 +416,50 @@ function world.setTile(x,y,key,l)
 	end
 end
 
+function world.raycast(x,y,r,d)
+	if x and y and r and d then
+		local map = world.map
+		if map and world.checkMap(map) then
+			local w, h = map.size.w, map.size.h
+			local ts = tile.tileSize
+			local cs = camera.getScale()
+			local sx, sy, ex, ey = math.floor(math.clamp((x-d)/ts+1, 1, w)), math.floor(math.clamp((y-d)/ts+1, 1, h)), math.floor(math.clamp((x+d)/ts, 1, w)), math.floor(math.clamp((y+d)/ts, 1, h))
+			
+			local tx, ty = x+math.cos(math.rad(r))*d, y+math.sin(math.rad(r))*d
+			local c1, cx1, cy1, c2, cx2, cy2, c3, cx3, cy3, c4, cx4, cy4 = false, 0, 0, false, 0, 0, false, 0, 0, false, 0, 0
+
+			for y1=sy, ey do
+				for x1=sx, ex do
+					if map.tiles and map.tiles.wall and map.tiles.wall[y1] and map.tiles.wall[y1][x1] then
+						local holdCheckTile = map.tiles.wall[y1][x1]
+						if holdCheckTile.collision == true then
+							local col = holdCheckTile.collider
+							local tcx, tcy, tcw, tch = (x1-1)*ts+ts*col.x, (y1-1)*ts+ts*col.y, ts*col.w, ts*col.h
+
+							c1, cx1, cy1 = math.raycast(x, y, tx, ty, tcx, tcy, tcx+tcw, tcy)	--Top Left Top Right
+							c2, cx2, cy2 = math.raycast(x, y, tx, ty, tcx, tcy+tch, tcx+tcw, tcy+tch)	--Bot Left Bot Right
+							c3, cx3, cy3 = math.raycast(x, y, tx, ty, tcx, tcy, tcx, tcy+tch)	--Top Left Bot Left
+							c4, cx4, cy4 = math.raycast(x, y, tx, ty, tcx+tcw, tcy, tcx+tcw, tcy+tch)	--Top Right Bot Right
+
+							if c1 or c2 or c3 or c4 then break end
+						end
+					end
+				end
+				if c1 or c2 or c3 or c4 then break end
+			end
+
+			if main.colDebug then
+				if c1 == false and c2 == false and c3 == false and c4 == false then love.graphics.setColor(255,255,255,255) else love.graphics.setColor(255,0,0,0) end
+				love.graphics.line(x, y, tx, ty)
+				love.graphics.setColor(255,255,255,255)
+				love.graphics.circle("fill", tx, ty, 5)
+			end
+			if c1 or c2 or c3 or c4 then return true else return false end
+		end
+		return false
+	else
+		debug.err("Incorrect call to function 'world.raycast(x,y,r,d)'")
+	end
+end
+
 return world
