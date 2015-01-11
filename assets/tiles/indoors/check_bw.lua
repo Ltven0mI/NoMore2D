@@ -1,6 +1,6 @@
-local check_bw = {}
-check_bw.name = "check_bw"
-check_bw.imageKey = "check_bw"
-check_bw.collision = false
+local tile = {}
+tile.name = "check_bw"
+tile.imageKey = "check_bw"
+tile.collision = false
 
-return check_bw
+return tile

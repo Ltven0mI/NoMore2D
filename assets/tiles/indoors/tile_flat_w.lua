@@ -1,6 +1,6 @@
-local tile_flat_w = {}
-tile_flat_w.name = "tile_flat_w"
-tile_flat_w.imageKey = "tile_flat_w"
-tile_flat_w.collision = false
+local tile = {}
+tile.name = "tile_flat_w"
+tile.imageKey = "tile_flat_w"
+tile.collision = false
 
-return tile_flat_w
+return tile

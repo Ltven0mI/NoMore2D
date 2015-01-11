@@ -1,16 +1,16 @@
-local cog_spin = {}
-cog_spin.name = "cog_spin"
-cog_spin.imageKey = "cog_spin"
+local tile = {}
+tile.name = "cog_spin"
+tile.imageKey = "cog_spin"
 
-cog_spin.tileset = {x=1,y=4}
-cog_spin.speed = 10
-cog_spin.playback = "loop"
-cog_spin.collision = true
+tile.tileset = {x=1,y=4}
+tile.speed = 10
+tile.playback = "loop"
+tile.collision = true
 
-cog_spin.cc = true
+tile.cc = true
 
 -- Callbacks --
-function cog_spin:interact()
+function tile:interact()
 	self.cc = not self.cc
 	if self.cc then
 		self.playback = "loop"
@@ -19,4 +19,4 @@ function cog_spin:interact()
 	end
 end
 
-return cog_spin
+return tile
