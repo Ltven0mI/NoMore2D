@@ -100,7 +100,7 @@ function player:update(dt)
 	end
 
 	--[[local ts = tile.tileSize
-	local x, y = camera.getMouse()
+	local x, y = camera.getMouse("world")
 	local tx, ty = math.floor(x/ts)+1, math.floor(y/ts)+1
 	if love.mouse.isDown("l") then
 		local holdTile = world.setTile(tx, ty, self.editTile, self.editLayer)
@@ -124,6 +124,17 @@ function player:drawscreen()
 			self.weapon.parent = nil
 			self.inventory:addItem(self.weapon)
 			self.weapon = nil
+		end
+		local amo = 0
+		local max = 0
+		if self.weapon.attach and self.weapon.attach.mag then
+			amo = self.weapon.attach.mag.rounds
+			max = self.weapon.attach.mag.maxRounds
+			love.graphics.print(amo.."/"..max, camera.vWindow.w-100, camera.vWindow.h-150)
+		elseif self.weapon.shells and self.weapon.maxShells and self.weapon.shell then
+			amo = self.weapon.shells
+			max = self.weapon.maxShells
+			love.graphics.print(amo.."/"..max, camera.vWindow.w-100, camera.vWindow.h-150)
 		end
 	end
 end
