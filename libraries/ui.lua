@@ -176,8 +176,8 @@ end
 
 function ui.beginGroup(x,y,w,h)
 	if x and y and w and h then
-		local mo = camera.getModeOffset()
-		love.graphics.setScissor(x+mo.x, y+mo.y, w, h)
+		local cs = camera.getScale()
+		love.graphics.setScissor(x*cs, y*cs, w, h)
 		ui.groupCount = ui.groupCount + 1
 	else
 		debug.err("Incorrect call to function 'ui.beginGroup(x,y,w,h)'")
