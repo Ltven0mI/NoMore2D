@@ -8,16 +8,17 @@ bullet.size = {w=15,h=60}
 bullet.speed = 1200
 bullet.life = 1
 bullet.curLife = 0
-bullet.damage = 2
+bullet.damage = 30
 
 bullet.doDestroy = false
 
 -- Callbacks --
 function bullet:update(dt)
 	local velx, vely = math.sin(math.rad(self.rot))*self.speed, -math.cos(math.rad(self.rot))*self.speed
-	local bool, num = world.raycast(self.pos.x, self.pos.y, self.rot-90, math.clamp(self.speed*dt*3, 10, math.huge))
+	local bool, hx, hy, obj = world.raycast(self.pos.x, self.pos.y, self.rot-90, math.clamp(self.speed*dt*3, 10, math.huge))
 	if bool then
 		self.doDestroy = true
+		if obj then if obj.attackObject then obj:attackObject(self.damage) end end
 	end
 	self.pos.x = self.pos.x + (self.vel.x+velx)*dt
 	self.pos.y = self.pos.y + (self.vel.y+vely)*dt
