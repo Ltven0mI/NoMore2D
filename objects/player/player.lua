@@ -1,7 +1,6 @@
 local player = {}
 
 -- Variables --
-player.tpos = {x=0,y=0}
 player.pos = {x=0,y=0}
 player.vel = {x=0,y=0}
 player.size = 32
@@ -16,6 +15,9 @@ player.editTileCords = {x=1,y=1}
 
 player.weapon = nil
 player.inventory = nil
+
+player.health = 100
+player.maxHealth = 100
 
 -- Callbacks --
 function player:created()
@@ -71,9 +73,6 @@ function player:update(dt)
 	self.pos.x = self.pos.x + self.vel.x
 	self.pos.y = self.pos.y + self.vel.y
 
-	self.tpos.x = self.pos.x/ts
-	self.tpos.y = self.pos.y/ts
-
 	self:checkCollision()
 
 	self.curRot = math.anglerp(self.curRot, self.rot, 0.1)
@@ -112,6 +111,8 @@ function player:update(dt)
 	if love.mouse.isDown("r") then
 		world.setTile(tx, ty, "", self.editLayer)
 	end]]
+
+	if self.health <= 0 then self:kill() end
 end
 
 function player:drawworld()
@@ -119,6 +120,7 @@ function player:drawworld()
 end
 
 function player:drawscreen()
+	love.graphics.print(self.health, 100, 100)
 	if self.weapon then
 		local amo = 0
 		local max = 0
@@ -188,6 +190,16 @@ function player:keypressed(key)
 end
 
 -- Functions --
+function player:attackObject(dam)
+	if dam then
+		self.health = self.health - dam
+	end
+end
+
+function player:kill()
+	object.destroyObject(self)
+end
+
 function player:equipItem(i)
 	if i then
 		if i.itemType == "weapon" then
