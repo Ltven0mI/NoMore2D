@@ -12,7 +12,7 @@ input.inventory = "i"
 
 -- Callbacks --
 
-function input.draw()
+function input.drawscreen()
 	input.curText = ""
 	input.clearKeys()
 end
