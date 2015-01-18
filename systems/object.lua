@@ -228,14 +228,14 @@ end
 function object.destroyObject(arg)
 	if arg then
 		if type(arg) == "number" then
-			if object.createdObjects[arg].onDestroy then object.createdObjects[arg]:onDestroy() end
 			if object.createdObjects[arg] then
+				if object.createdObjects[arg].onDestroy then object.createdObjects[arg]:onDestroy() end
 				object.createdObjects[arg] = nil
 			end
 		elseif type(arg) == "table" then
 			if arg.uid then
-				if object.createdObjects[arg.uid].onDestroy then object.createdObjects[arg.uid]:onDestroy() end
 				if object.createdObjects[arg.uid] then
+					if object.createdObjects[arg.uid].onDestroy then object.createdObjects[arg.uid]:onDestroy() end
 					object.createdObjects[arg.uid] = nil
 				end
 			end
