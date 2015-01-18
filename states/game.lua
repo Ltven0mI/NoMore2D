@@ -7,10 +7,12 @@ game.player = nil
 function game.stateOpen()
 	world.loadMap("level_01")
 	game.player = object.new("player")
+	world.genZombies(10)
 	--object.new("light", 50, 50, 150)
 end
 function game.stateClose()
 	world.clearMap()
+	world.clearZombies()
 	if game.player ~= nil then
 		object.destroyObject(game.player)
 		game.player = nil
