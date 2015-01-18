@@ -7,6 +7,8 @@ world.map = {}
 world.vignette = nil
 world.lastUpdate = 0
 
+world.zombies = {}
+
 -- Callbacks --
 function world.load()
 	world.vignette = image.getImage("vignette")
@@ -21,6 +23,7 @@ end
 
 function world.update(dt)
 	local map = world.map
+
 	if map then
 		if world.checkMap(map) then
 			local w, h = map.size.w, map.size.h
@@ -98,6 +101,7 @@ function world.update(dt)
 				end
 			end
 		end
+		for k, v in pairs(world.zombies) do if v.health <= 0 then world.zombies[k] = nil end end
 	end
 	world.lastUpdate = love.timer.getTime()
 end
@@ -345,9 +349,28 @@ function world.genWorld(w,h)
 	world.loadMap(map)
 end
 
+function world.genZombies(c)
+	if c then
+		if world.map and world.checkMap(world.map) then
+			for i=1, c do
+				local x, y = math.random(1, world.map.size.w), math.random(1, world.map.size.h)
+				world.zombies[i] = object.new("zombie", x*tile.tileSize, y*tile.tileSize)
+			end
+		end
+	else
+		debug.err("Incorrect call to function 'world.genZombies(c)'")
+	end
+end
+
 function world.clearMap()
 	if world.map ~= nil then
 		world.map = nil
+	end
+end
+
+function world.clearZombies()
+	for k, v in pairs(world.zombies) do
+		object.destroyObject(v)
 	end
 end
 
@@ -416,7 +439,7 @@ function world.setTile(x,y,key,l)
 	end
 end
 
-function world.raycast(x,y,r,d)
+function world.raycast(x,y,r,d,ignore,ip)
 	if x and y and r and d then
 		local map = world.map
 		if map and world.checkMap(map) then
@@ -427,6 +450,12 @@ function world.raycast(x,y,r,d)
 			
 			local tx, ty = x+math.cos(math.rad(r))*d, y+math.sin(math.rad(r))*d
 			local c1, cx1, cy1, c2, cx2, cy2, c3, cx3, cy3, c4, cx4, cy4 = false, 0, 0, false, 0, 0, false, 0, 0, false, 0, 0
+			local shortest = math.huge
+			local holdShort = {x=0, y=0, obj=nil}
+			local hit = false
+
+			if ignore == nil then ignore = {} end
+			if ip == nil then ip = false end
 
 			for y1=sy, ey do
 				for x1=sx, ex do
@@ -441,20 +470,47 @@ function world.raycast(x,y,r,d)
 							c3, cx3, cy3 = math.raycast(x, y, tx, ty, tcx, tcy, tcx, tcy+tch)	--Top Left Bot Left
 							c4, cx4, cy4 = math.raycast(x, y, tx, ty, tcx+tcw, tcy, tcx+tcw, tcy+tch)	--Top Right Bot Right
 
-							if c1 or c2 or c3 or c4 then break end
+							if c1 then if math.dist(cx1, cy1, x, y) < shortest then shortest = math.dist(cx1, cy1, x, y); holdShort.x, holdShort.y = cx1, cy1; holdShort.obj = holdCheckTile; hit = true end end
+							if c2 then if math.dist(cx2, cy2, x, y) < shortest then shortest = math.dist(cx2, cy2, x, y); holdShort.x, holdShort.y = cx2, cy2; holdShort.obj = holdCheckTile; hit = true end end
+							if c3 then if math.dist(cx3, cy3, x, y) < shortest then shortest = math.dist(cx3, cy3, x, y); holdShort.x, holdShort.y = cx3, cy3; holdShort.obj = holdCheckTile; hit = true end end
+							if c4 then if math.dist(cx4, cy4, x, y) < shortest then shortest = math.dist(cx4, cy4, x, y); holdShort.x, holdShort.y = cx4, cy4; holdShort.obj = holdCheckTile; hit = true end end
+
 						end
 					end
 				end
-				if c1 or c2 or c3 or c4 then break end
 			end
 
-			if main.colDebug then
+			if not ip then
+				for k, v in pairs(world.zombies) do
+					if math.dist(x, y, v.pos.x, v.pos.y) <= d then
+						local same = false
+						for kk, vv in pairs(ignore) do
+							if vv == v then same = true end
+						end
+						if v and type(v) == "table" and not same then
+							local zcx, zcy, zcw, zch = v.pos.x, v.pos.y, v.size, v.size
+
+							c1, cx1, cy1 = math.raycast(x, y, tx, ty, zcx, zcy, zcx+zcw, zcy)	--Top Left Top Right
+							c2, cx2, cy2 = math.raycast(x, y, tx, ty, zcx, zcy+zch, zcx+zcw, zcy+zch)	--Bot Left Bot Right
+							c3, cx3, cy3 = math.raycast(x, y, tx, ty, zcx, zcy, zcx, zcy+zch)	--Top Left Bot Left
+							c4, cx4, cy4 = math.raycast(x, y, tx, ty, zcx+zcw, zcy, zcx+zcw, zcy+zch)	--Top Right Bot Right
+
+							if c1 then if math.dist(cx1, cy1, x, y) < shortest then shortest = math.dist(cx1, cy1, x, y); holdShort.x, holdShort.y = cx1, cy1; holdShort.obj = v; hit = true end end
+							if c2 then if math.dist(cx2, cy2, x, y) < shortest then shortest = math.dist(cx2, cy2, x, y); holdShort.x, holdShort.y = cx2, cy2; holdShort.obj = v; hit = true end end
+							if c3 then if math.dist(cx3, cy3, x, y) < shortest then shortest = math.dist(cx3, cy3, x, y); holdShort.x, holdShort.y = cx3, cy3; holdShort.obj = v; hit = true end end
+							if c4 then if math.dist(cx4, cy4, x, y) < shortest then shortest = math.dist(cx4, cy4, x, y); holdShort.x, holdShort.y = cx4, cy4; holdShort.obj = v; hit = true end end
+						end
+					end
+				end
+			end
+
+			--[[if main.colDebug then
 				if c1 == false and c2 == false and c3 == false and c4 == false then love.graphics.setColor(255,255,255,255) else love.graphics.setColor(255,0,0,0) end
 				love.graphics.line(x, y, tx, ty)
 				love.graphics.setColor(255,255,255,255)
 				love.graphics.circle("fill", tx, ty, 5)
-			end
-			if c1 or c2 or c3 or c4 then return true else return false end
+			end]]
+			if hit and holdShort and holdShort.x and holdShort.y then return true, holdShort.x, holdShort.y, holdShort.obj else return false end
 		end
 		return false
 	else
