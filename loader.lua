@@ -35,8 +35,6 @@ loader.sortedSystems = {}
 
 loader.curPri = 0
 
-loader.lib = {}		--Loader Libraries
-
 -- Callbacks --
 function love.draw()
 	local i = 1
@@ -371,7 +369,7 @@ function loader.getLibraries(dir,isrepeat)
 		local key = string.gsub(item, ".lua", "")
 		if key then
 			if love.filesystem.isFile(dir.."/"..item) then
-				local holdLib = require(dir.."/"..key)
+				require(dir.."/"..key)
 				debug.log("[LOADER] Adding lib '"..key.."' from directory '"..dir.."'")
 			elseif love.filesystem.isDirectory(dir.."/"..item) and item ~= "blacklist" then
 				loader.getLibraries(dir.."/"..item, true)
